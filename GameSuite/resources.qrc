@@ -1,0 +1,27 @@
+<RCC>
+    <qresource prefix="/">
+        <file>resources/icon.ico</file>
+        <file>resources/knight.ico</file>
+        <file>resources/hexagonknight.ico</file>
+        <file>resources/squares/Grayscale/lightsquare.svg</file>
+        <file>resources/squares/Grayscale/darksquare.svg</file>
+		<file>resources/squares/Grayscale/theme.svg</file>
+		<file>resources/squares/Wood/lightsquare.svg</file>
+        <file>resources/squares/Wood/darksquare.svg</file>
+		<file>resources/squares/Wood/theme.svg</file>
+		<file>resources/squares/PromotionSelection/hovered.svg</file>
+		<file>resources/squares/PromotionSelection/unhovered.svg</file>
+		<file>resources/pieces/wR.svg</file>
+		<file>resources/pieces/wN.svg</file>
+		<file>resources/pieces/wB.svg</file>
+		<file>resources/pieces/wK.svg</file>
+		<file>resources/pieces/wQ.svg</file>
+		<file>resources/pieces/wP.svg</file>
+		<file>resources/pieces/bR.svg</file>
+		<file>resources/pieces/bN.svg</file>
+		<file>resources/pieces/bB.svg</file>
+		<file>resources/pieces/bK.svg</file>
+		<file>resources/pieces/bQ.svg</file>
+		<file>resources/pieces/bP.svg</file>
+    </qresource>
+</RCC>
