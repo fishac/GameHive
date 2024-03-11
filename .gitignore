@@ -44,4 +44,5 @@ compile_commands.json
 CTestTestfile.cmake
 _deps
 GameSuite_autogen
-build/*
+**/build/*
+**/*.egg*

@@ -409,12 +409,19 @@ void BoardState::setKingVisibility(const Color_t& c, const int& sq_idx) {
 		| Square::w(northsouth)
 	// Compute east and west squares of king, add to visibility
 		| Square::e(sq) 
-		| Square::w(sq)
+		| Square::w(sq));
+
+	// Track defended pieces by king.
+	possibleDefendedPieces[sq_idx] = visibility[sq_idx] & getPiecesMask(c);
+	getPossibleDefendedPiecesMask(c) |= (visibility[sq_idx] & getPiecesMask(c));
+	
 	// Add possible castle target squares to visibility
+	visibility[sq_idx] = visibility[sq_idx]
 		| (Square::ee(sq)*(turnColor == c && kSideCastleRights[c] && (sq == Square::getDefaultStartingKingSquare(c))))
-		| (Square::ww(sq)*(turnColor == c && qSideCastleRights[c] && (sq == Square::getDefaultStartingKingSquare(c)))))
-	// Remove squares which contain friendly pieces
-		& ~getPiecesMask(c);
+		| (Square::ww(sq)*(turnColor == c && qSideCastleRights[c] && (sq == Square::getDefaultStartingKingSquare(c))));
+
+	// Remove squares which contain color c pieces
+	visibility[sq_idx] = visibility[sq_idx] & ~getPiecesMask(c);
 }
 
 void BoardState::reduceKingVisibilityAttackedSquares() {

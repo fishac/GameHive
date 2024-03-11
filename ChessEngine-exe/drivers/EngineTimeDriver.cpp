@@ -10,9 +10,9 @@
 using namespace std::chrono;
 
 int main(int argc, char *argv[]) {
-	if (argc != 9) {
-		std::cout << "Usage: EngineTimeDriver <millisRemaining:int> <incrementMillis:int> <FEN:str:board turn castleRights enPassantSquare halfmoveClock moveNumber>" << std::endl;
-		std::cout << "Ex: EngineTimeDriver 180000 200 rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1" << std::endl;
+	if (argc != 8) {
+		std::cout << "Usage: EngineTimeDriver <millisRemaining:int> <FEN:str:board turn castleRights enPassantSquare halfmoveClock moveNumber>" << std::endl;
+		std::cout << "Ex: EngineTimeDriver 180000 rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1" << std::endl;
 		return 1;
 	}
 	int millisRemaining = atoi(argv[1]);
@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
 	eng.setFEN(FEN);
 	std::cout << "FEN: (" << FEN << ")" << std::endl;
 	auto start = high_resolution_clock::now();
-	ExtendedMove m = eng.suggestMove(millisRemaining,incrementMillis);
+	ExtendedMove m = eng.suggestMove(millisRemaining,0,true);
 	auto stop = high_resolution_clock::now();
 	auto duration = duration_cast<milliseconds>(stop - start);
 	

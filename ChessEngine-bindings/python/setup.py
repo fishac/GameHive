@@ -15,7 +15,6 @@ PLAT_TO_CMAKE = {
     "win-arm64": "ARM64",
 }
 
-
 # A CMakeExtension needs a sourcedir instead of a file list.
 # The name must be the _single_ output extension from the CMake build.
 # If you need multiple extensions, see scikit-build.
@@ -94,6 +93,7 @@ class CMakeBuild(build_ext):
                     f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_{cfg.upper()}={extdir}"
                 ]
                 build_args += ["--config", cfg]
+                
 
         if sys.platform.startswith("darwin"):
             # Cross-compile support for macOS - respect ARCHFLAGS if set
@@ -114,22 +114,24 @@ class CMakeBuild(build_ext):
         if not build_temp.exists():
             build_temp.mkdir(parents=True)
 
+        print("cmake_args:")
+        print(cmake_args)
         subprocess.run(
             ["cmake", ext.sourcedir, *cmake_args], cwd=build_temp, check=True
         )
         subprocess.run(
             ["cmake", "--build", ".", *build_args], cwd=build_temp, check=True
         )
+		
 
 
 # The information here can also be placed in setup.cfg - better separation of
 # logic and declaration, and simpler if you include description/version in a file.
 setup(
-    name="ChessEngine",
+    name="ChessEnginePython",
     version="1.0.0",
     author="Alex Fish",
     ext_modules=[CMakeExtension("ChessEnginePython")],
     cmdclass={"build_ext": CMakeBuild},
-    zip_safe=False,
-    python_requires=">=3.7",
+    zip_safe=False
 )

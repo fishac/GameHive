@@ -286,3 +286,10 @@ TEST_CASE("BLACK MOVE WOULD BE CHECK", "[moveGivesCheck]") {
 	REQUIRE(bs.isMoveLegal(Square::getSquare("d3"),Square::getSquare("d2")));
 	REQUIRE(bs.moveGivesCheck(Square::getSquare("d3"),Square::getSquare("d2")));
 }
+
+TEST_CASE("KING DEFENDS PIECE", "[moveGivesCheck]") {
+	std::string FEN = "8/8/8/3n4/2k1K3/8/8/8 w - - 0 1";
+	BoardState bs(FEN);
+	
+	REQUIRE(!bs.isMoveLegal(Square::getSquare("e4"),Square::getSquare("d5")));
+}

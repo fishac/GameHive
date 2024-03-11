@@ -7,85 +7,97 @@
 #include <numeric>
 #include <chrono>
 
-using namespace std::chrono;
 
-ExtendedMove ChessEngine::makeMove(int millisRemaining, int millisIncrement) {
-	ExtendedMove ret = computeBestMove(millisRemaining,millisIncrement);
+ExtendedMove ChessEngine::makeMove(int millisRemaining, int millisIncrement, bool strict_limit) {
+	ExtendedMove ret = computeBestMove(millisRemaining,millisIncrement,strict_limit);
 	bool madeMove = internalState->makeMove(ret);
 	return ret;
 }
 
-ExtendedMove ChessEngine::suggestMove(int millisRemaining, int millisIncrement) {
-	ExtendedMove ret = computeBestMove(millisRemaining,millisIncrement);
+ExtendedMove ChessEngine::suggestMove(int millisRemaining, int millisIncrement, bool strict_limit) {
+	ExtendedMove ret = computeBestMove(millisRemaining,millisIncrement,strict_limit);
 	return ret;
 }
 
-ExtendedMove ChessEngine::computeBestMove(int millisRemaining, int millisIncrement) {
+ExtendedMove ChessEngine::computeBestMove(int millisRemaining, int millisIncrement, bool strict_limit) {
 	numScannedNodes = 1;
 	numScannedLeaves = 0;
 	currentTurnColor = internalState->getTurnColor();
 	inNullMoveSearch = false;
+	hardTimeCutoff = false;
 	tTable->clear();
 	clearKillerMoves();
 	if (internalState->getCheckmateStatus() || internalState->getStalemateStatus()) {
 		return nullMove();
 	} else {
-		return search(millisRemaining,millisIncrement);
+		return search(millisRemaining,millisIncrement,strict_limit);
 	}
 }
 
 int ChessEngine::getSearchTimeLimit(int millisRemaining, int millisIncrement) {
 	if (millisRemaining > 0) {
-		int moveNumber = internalState->getMoveNumber();
-		int estimatedTurnsLeft = std::max(60-moveNumber,20);
-		int estimatedTotalTurns = moveNumber + estimatedTurnsLeft;
-		int estimatedTimeLeft = millisRemaining;
-		if (millisIncrement > 0) {
-			estimatedTimeLeft += estimatedTurnsLeft*millisIncrement;
-		}
-		int estimatedTotalTime = estimatedTimeLeft * (estimatedTotalTurns) / estimatedTurnsLeft;
-		int searchTimeLimit = 0;
-		if (moveNumber < 7) {
-			searchTimeLimit = estimatedTotalTime/100;
-		} else if (moveNumber < 18) {
-			searchTimeLimit = estimatedTotalTime/30;
-		} else if (moveNumber < 26) { 
-			searchTimeLimit = estimatedTotalTime/50;
+		if (millisRemaining < millisIncrement*3/2) {
+			return millisIncrement;
 		} else {
-			searchTimeLimit = estimatedTotalTime/100;
+			int moveNumber = internalState->getMoveNumber();
+			int estimatedTurnsLeft = std::max(60-moveNumber,20);
+			int estimatedTotalTurns = moveNumber + estimatedTurnsLeft;
+			int estimatedTimeLeft = millisRemaining;
+			if (millisIncrement > 0) {
+				estimatedTimeLeft += estimatedTurnsLeft*millisIncrement;
+			}
+			int estimatedTotalTime = estimatedTimeLeft * (estimatedTotalTurns) / estimatedTurnsLeft;
+			int searchTimeLimit = 0;
+			if (moveNumber < 7) {
+				searchTimeLimit = estimatedTotalTime/100;
+			} else if (moveNumber < 18) {
+				searchTimeLimit = estimatedTotalTime/40;
+			} else if (moveNumber < 26) { 
+				searchTimeLimit = estimatedTotalTime/50;
+			} else {
+				searchTimeLimit = estimatedTotalTime/100;
+			}
+			searchTimeLimit = std::max(searchTimeLimit,
+			searchTimeLimit = std::max(searchTimeLimit,100);
+			
+			/*
+			std::cout 
+				<< "moveNumber: " << moveNumber << std::endl
+				<< "estimatedTurnsLeft: " << estimatedTurnsLeft << std::endl
+				<< "estimatedTotalTurns: " << estimatedTotalTurns << std::endl
+				<< "estimatedTimeLeft: " << estimatedTimeLeft << std::endl
+				<< "estimatedTotalTime: " << estimatedTotalTime << std::endl
+				<< "searchTimeLimit: " << searchTimeLimit << std::endl
+				<< std::endl;
+			*/
+			return searchTimeLimit;
 		}
-		searchTimeLimit = std::max(searchTimeLimit,100);
-		/*
-		std::cout 
-			<< "moveNumber: " << moveNumber << std::endl
-			<< "estimatedTurnsLeft: " << estimatedTurnsLeft << std::endl
-			<< "estimatedTotalTurns: " << estimatedTotalTurns << std::endl
-			<< "estimatedTimeLeft: " << estimatedTimeLeft << std::endl
-			<< "estimatedTotalTime: " << estimatedTotalTime << std::endl
-			<< "searchTimeLimit: " << searchTimeLimit << std::endl
-			<< std::endl;
-		*/
-		return searchTimeLimit;
 	} else {
 		return -1;
 	}
 }
 
-ExtendedMove ChessEngine::search(int millisRemaining, int millisIncrement) {
-	auto startSearchTime = high_resolution_clock::now();
-	auto currentTime = high_resolution_clock::now();
-	int cumulativeSearchTime = duration_cast<milliseconds>(currentTime - startSearchTime).count();
-	int searchTimeLimit = getSearchTimeLimit(millisRemaining, millisIncrement);
+bool ChessEngine::shouldHardTimeCutoff() {
+	auto currentTime = steady_clock::now();
+	int totalSearchTime = duration_cast<milliseconds>(currentTime - startSearchTime).count();
+	return ((totalSearchTime > searchTimeLimit*97/100) || hardTimeCutoff);
+}
+
+ExtendedMove ChessEngine::search(int millisRemaining, int millisIncrement, bool strict_limit) {
+	startSearchTime = steady_clock::now();
+	searchTimeLimit = strict_limit ? millisRemaining : getSearchTimeLimit(millisRemaining, millisIncrement);
+	auto currentTime = steady_clock::now();
+	int cumulativeSearchTime = 0;
 	int bestScore = worstPossibleScore;
 	std::vector<ExtendedMove> moves = internalState->getLegalExtendedMoves();
 	if (moves.size() == 1) {
 		return moves[0];
 	}
 	int moveScore;
-	ExtendedMove bestMove;
+	ExtendedMove bestMove = nullMove();
 	bool inCheck = internalState->getCheckStatus();
-	for (int currentDepthLimit = 1; currentDepthLimit <= maxDepth; currentDepthLimit++) {
-		lastSearchedDepth = currentDepthLimit;
+	int currentDepthLimit = 1;
+	for (currentDepthLimit = 1; currentDepthLimit <= maxDepth; currentDepthLimit++) {
 		clearKillerMoves();
 		int currentBestScore = worstPossibleScore;
 		int beta = bestPossibleScore;
@@ -117,6 +129,11 @@ ExtendedMove ChessEngine::search(int millisRemaining, int millisIncrement) {
 				!inCheck && !moveIsCapture && !moveGivesCheck && !moveIsNearPromotion && !moveIsPromotion
 			) {
 				moveScore = -searchInternal(currentDepthLimit,nextDepthRemaining-1,1,0,nextMoves,-beta,-currentBestScore);
+				if (shouldHardTimeCutoff()) {
+					hardTimeCutoff = true;
+					unmakeMove(0);
+					break;
+				}
 				if (moveScore > currentBestScore) {
 					moveScore = -searchInternal(currentDepthLimit,nextDepthRemaining,1,0,nextMoves,-beta,-currentBestScore);
 				}
@@ -124,6 +141,11 @@ ExtendedMove ChessEngine::search(int millisRemaining, int millisIncrement) {
 				moveScore = -searchInternal(currentDepthLimit,nextDepthRemaining+extension,1,1,nextMoves,-beta,-currentBestScore);
 			}
 			unmakeMove(0);
+			if (shouldHardTimeCutoff()) {
+				hardTimeCutoff = true;
+				unmakeMove(0);
+				break;
+			}
 			// Set possible alpha improvement
 			if (moveScore > currentBestScore) {
 				currentBestMove = move;
@@ -131,24 +153,46 @@ ExtendedMove ChessEngine::search(int millisRemaining, int millisIncrement) {
 			}
 			moveIdx++;
 		}
+		
+		if (shouldHardTimeCutoff()) {
+		// If reached hard time cutoff and stopped prematurely, don't trust results
+			hardTimeCutoff = true;
+			break;
+		}
+		
 		// Update stored best move after completing a depth
 		bestMove = currentBestMove;
 		bestScore = currentBestScore;
 		
 		// Check if we need to stop the search
-		currentTime = high_resolution_clock::now();
+		currentTime = steady_clock::now();
 		cumulativeSearchTime = duration_cast<milliseconds>(currentTime - startSearchTime).count();
-		if (currentDepthLimit > minDepth && searchTimeLimit > 0 && cumulativeSearchTime > searchTimeLimit*50/100) {
+		if (
+			(!strict_limit && currentDepthLimit > minDepth) 
+			&& searchTimeLimit > 0 
+			&& cumulativeSearchTime > searchTimeLimit*50/100 
+		) {
 			break;
 		}
 	}
 	// Re-set legal moves for future move-making
 	internalState->updateLegality();
 	evaluation = bestScore;
-	return bestMove;
+	moveSearchTime = duration_cast<milliseconds>(steady_clock::now() - startSearchTime).count();
+	moveSearchDepth = hardTimeCutoff ? currentDepthLimit-1 : currentDepthLimit;
+
+	if (MoveUtils::extendedMoveEquals(bestMove,nullMove())) {
+		return moves[0];
+	} else {
+		return bestMove;
+	}
 }
 
 int ChessEngine::searchInternal(const int& currentDepthLimit, const int& depthRemaining, const int& currentDepthIdx, const int& totalExtensions, std::vector<ExtendedMove>& moves, int alpha, int beta) {
+	if (shouldHardTimeCutoff()) {
+		hardTimeCutoff = true;
+		return 0;
+	}
 	numScannedNodes++;
 	if (moves.empty()) {
 		numScannedLeaves++;
@@ -176,6 +220,10 @@ int ChessEngine::searchInternal(const int& currentDepthLimit, const int& depthRe
 		internalState->undoMove();
 		inNullMoveSearch = false;
 		
+		if (hardTimeCutoff) {
+			return 0;
+		}
+		
 		if (moveScore >= beta) {
 			nextDepthRemaining -= 4;
 			if (nextDepthRemaining <= 0) {
@@ -184,6 +232,7 @@ int ChessEngine::searchInternal(const int& currentDepthLimit, const int& depthRe
 			}
 		}
 	} 
+	
 	ExtendedMove bestMove;
 	int bestScore = worstPossibleScore;
 	int moveScore = worstPossibleScore;
@@ -218,6 +267,10 @@ int ChessEngine::searchInternal(const int& currentDepthLimit, const int& depthRe
 			!inCheck && !moveIsCapture && !moveGivesCheck && !moveIsNearPromotion && !moveIsPromotion
 		) {
 			moveScore = -searchInternal(currentDepthLimit,nextDepthRemaining-1,currentDepthIdx+1,totalExtensions,nextMoves,-beta,-alpha);
+			if (hardTimeCutoff) {
+				unmakeMove(currentDepthIdx);
+				return 0;
+			}
 			if (moveScore > alpha) {
 				moveScore = -searchInternal(currentDepthLimit,nextDepthRemaining,currentDepthIdx+1,totalExtensions,nextMoves,-beta,-alpha);
 			}
@@ -226,6 +279,10 @@ int ChessEngine::searchInternal(const int& currentDepthLimit, const int& depthRe
 		}
 		
 		unmakeMove(currentDepthIdx);
+		
+		if (hardTimeCutoff) {
+			return 0;
+		}
 		
 		if (moveScore > bestScore) {
 			bestMove = move;
@@ -253,6 +310,10 @@ int ChessEngine::searchInternal(const int& currentDepthLimit, const int& depthRe
 }
 
 int ChessEngine::zeroWindowSearch(const int& currentDepthLimit, const int& depthRemaining, const int& currentDepthIdx, std::vector<ExtendedMove>& moves, int beta) {
+	if (shouldHardTimeCutoff()) {
+		hardTimeCutoff = true;
+		return 0;
+	}
 	numScannedNodes++;
 	if (moves.empty()) {
 		numScannedLeaves++;
@@ -275,7 +336,10 @@ int ChessEngine::zeroWindowSearch(const int& currentDepthLimit, const int& depth
 		moveScore = -zeroWindowSearch(currentDepthLimit,nextDepthRemaining,currentDepthIdx+1,nextMoves,1-beta);
 			
 		unmakeMove(currentDepthIdx);
-
+		
+		if (hardTimeCutoff) {
+			return 0;
+		}
 		if (moveScore >= beta) {
 			return beta;
 		}
@@ -284,6 +348,10 @@ int ChessEngine::zeroWindowSearch(const int& currentDepthLimit, const int& depth
 }
 
 int ChessEngine::quiesce(const int& currentDepthLimit, const int& qDepth, std::vector<ExtendedMove>& moves, int alpha, int beta) {
+	if (shouldHardTimeCutoff()) {
+		hardTimeCutoff = true;
+		return 0;
+	}
 	numScannedNodes++;
 	int baselineScore = evaluateInternalState();
 	if (moves.empty() || qDepth == 0) {
@@ -324,6 +392,10 @@ int ChessEngine::quiesce(const int& currentDepthLimit, const int& qDepth, std::v
 		moveScore = -quiesce(currentDepthLimit,qDepth-1,nextMoves,-beta,-alpha);
 		
 		internalState->undoMove();
+		if (hardTimeCutoff) {
+			return 0;
+		}
+		
 		if (moveScore >= beta) {
 			alpha = moveScore;
 			break;
@@ -450,7 +522,7 @@ int ChessEngine::getPriority(const ExtendedMove& m, const ExtendedMove& leastVal
 			Piece_t movingPiece = internalState->getPieceOnSquare(m.from);
 			Piece_t capturedPiece = internalState->getPieceOnSquare(m.to);
 			int materialDifference = capturedPiece - movingPiece;
-			priority += 2000 + (10*capturedPiece - (10-movingPiece));
+			priority += 2000 + (10*capturedPiece + (10-movingPiece));
 		} else {
 			Piece_t movingPiece = internalState->getPieceOnSquare(m.from);
 			priority += (10-movingPiece);

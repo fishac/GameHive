@@ -17,7 +17,7 @@ void ChessEngineManager::deinitialize() {
 }
 
 void ChessEngineManager::computeMove(int millisRemaining, int incrementMillis) {
-	ExtendedMove m = eng->makeMove(millisRemaining,incrementMillis);
+	ExtendedMove m = eng->makeMove(millisRemaining,incrementMillis,false);
 	emit engineComputedMove(m);
 }
 

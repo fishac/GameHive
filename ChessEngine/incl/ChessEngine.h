@@ -5,23 +5,28 @@
 #include "EngineBoardState.h"
 #include "TranspositionTable.h"
 #include <array>
+#include <chrono>
 
 using namespace ChessCore;
 using namespace ChessCore::Color;
 using namespace ChessCore::Piece;
+using namespace std::chrono;
 
 class ChessEngine {
 public:
 	~ChessEngine();
 	ChessEngine();
-	ExtendedMove makeMove(int millisRemaining, int millisIncrement);
-	ExtendedMove suggestMove(int millisRemaining, int millisIncrement);
+	ExtendedMove makeMove(int millisRemaining, int millisIncrement, bool strict_limit);
+	ExtendedMove suggestMove(int millisRemaining, int millisIncrement, bool strict_limit);
 	bool provideMove(const ExtendedMove& m);
 	void setMaxDepth(int depth);
 	void setMinDepth(int depth);
 	int getMaxDepth();
 	int getMinDepth();
-	int getLastSearchedDepth();
+	int getMoveSearchDepth();
+	int getMoveSearchTime();
+	int getMoveSearchTimeLimit();
+	bool searchWasHardTimeCutoff();
 	void setFEN(std::string FEN);
 	std::string getFEN();
 	int getNumScannedNodes();
@@ -44,17 +49,22 @@ private:
 	int bestPossibleScore = 1e9;
 	int qDepthLimit = 10;
 	int maxExtensions = 6;
-	int lastSearchedDepth = 0;
 	bool inNullMoveSearch = false;
 	bool currentTurnColor;
+	time_point<steady_clock> startSearchTime;
+	int searchTimeLimit = 0;
+	bool hardTimeCutoff = false;
+	int moveSearchTime = 0;
+	int moveSearchDepth = 0;
 	int getCurrentPhase();
-	ExtendedMove computeBestMove(int millisRemaining, int millisIncrement);
+	ExtendedMove computeBestMove(int millisRemaining, int millisIncrement, bool strict_limit);
 	bool shouldComputeMove();
 	bool shouldCheckNullMove(const int& beta);
 	ExtendedMove nullMove();
 	int evaluateInternalState();
 	int getSearchTimeLimit(int millisRemaining, int millisIncrement);
-	ExtendedMove search(int millisRemaining, int millisIncrement);
+	bool shouldHardTimeCutoff();
+	ExtendedMove search(int millisRemaining, int millisIncrement, bool strict_limit);
 	int searchInternal(const int& currentDepthLimit, const int& depthRemaining, const int& currentDepthIdx, const int& totalExtensions, std::vector<ExtendedMove>& moves, int alpha, int beta);
 	int zeroWindowSearch(const int& currentDepthLimit, const int& depthRemaining, const int& currentDepthIdx, std::vector<ExtendedMove>& moves, int beta);
 	int quiesce(const int& currentDepthLimit, const int& qDepth, std::vector<ExtendedMove>& moves, int alpha, int beta);

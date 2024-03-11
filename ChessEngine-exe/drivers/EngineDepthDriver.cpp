@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
 	eng.setMaxDepth(depth);
 	std::cout << "Depth: (" << depth << "), FEN: (" << FEN << ")" << std::endl;
 	auto start = high_resolution_clock::now();
-	ExtendedMove m = eng.suggestMove(-1,-1);
+	ExtendedMove m = eng.suggestMove(-1,-1,false);
 	auto stop = high_resolution_clock::now();
 	auto duration = duration_cast<milliseconds>(stop - start);
 	

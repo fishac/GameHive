@@ -27,8 +27,20 @@ int ChessEngine::getMinDepth() {
 	return minDepth;
 }
 
-int ChessEngine::getLastSearchedDepth() {
-	return lastSearchedDepth;
+int ChessEngine::getMoveSearchDepth() {
+	return moveSearchDepth;
+}
+
+int ChessEngine::getMoveSearchTime() {
+	return moveSearchTime;
+}
+
+bool ChessEngine::searchWasHardTimeCutoff() {
+	return hardTimeCutoff;
+}
+
+int ChessEngine::getMoveSearchTimeLimit() {
+	return searchTimeLimit;
 }
 
 void ChessEngine::setFEN(std::string FEN) {
