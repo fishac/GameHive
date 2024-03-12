@@ -15,7 +15,7 @@ int ChessEngine::getCurrentPhase() {
 
 int ChessEngine::evaluateInternalState() {
 	if (internalState->getCheckmateStatus()) {
-		return bestPossibleScore+3;
+		return -(bestPossibleScore+3);
 	} else if (internalState->getStalemateStatus()) {
 		return 0;
 	}
