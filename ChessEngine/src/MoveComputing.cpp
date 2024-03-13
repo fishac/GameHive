@@ -57,7 +57,6 @@ int ChessEngine::getSearchTimeLimit(int millisRemaining, int millisIncrement) {
 			} else {
 				searchTimeLimit = estimatedTotalTime/100;
 			}
-			searchTimeLimit = std::max(searchTimeLimit,
 			searchTimeLimit = std::max(searchTimeLimit,100);
 			
 			/*

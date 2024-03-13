@@ -34,8 +34,8 @@ int ChessEngine::evaluateInternalState() {
 			+ endgamePieceTables[wp][i]*std::max(maxPhase-currentPhase,0)
 		) / maxPhase;
 		blackPiecePoints += baseScoresTable.at(bp) + (
-			earlygamePieceTables[bp][63-i]*std::min(currentPhase,maxPhase)/maxPhase
-			+ endgamePieceTables[bp][63-i]*std::max(maxPhase-currentPhase,0)/maxPhase
+			earlygamePieceTables[bp][63-i]*std::min(currentPhase,maxPhase)
+			+ endgamePieceTables[bp][63-i]*std::max(maxPhase-currentPhase,0)
 		) / maxPhase;
 	}
 	
