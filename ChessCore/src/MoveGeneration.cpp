@@ -472,7 +472,7 @@ void BoardState::reduceVisibilityFromSquare(const Color_t& c, const int& sq_idx)
 	if ((visibility[sq_idx] & opposingKingSq) != NO_SQUARE) {
 		kingAttackers.push_back(sq);
 	} 
-	if (getPieces(c)[sq_idx] == PAWN && turnColor == c) {
+	if (getPieces(c)[sq_idx] == PAWN) {
 	// If piece is a pawn
 		Square_t nswsq = NO_SQUARE;
 		Square_t nsesq = NO_SQUARE;

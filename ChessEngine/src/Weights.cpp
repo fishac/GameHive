@@ -186,11 +186,11 @@ int getBlackEarlygameWeight(const Piece_t& p, const int& sq_idx) {
 	return earlygamePieceTables[p][(7-sq_rank)*8+sq_file];
 }
 
-int getWhiteEndgameWeight(const Piece_t& p, const int& sq_idx, const bool& reflect) {
+int getWhiteEndgameWeight(const Piece_t& p, const int& sq_idx) {
 	return endgamePieceTables[p][sq_idx];
 }
 
-int getBlackEndgameWeight(const Piece_t& p, const int& sq_idx, const bool& reflect) {
+int getBlackEndgameWeight(const Piece_t& p, const int& sq_idx) {
 	int sq_file = ChessCore::Square::getFile(sq_idx);
 	int sq_rank = ChessCore::Square::getRank(sq_idx);
 	return endgamePieceTables[p][(7-sq_rank)*8+sq_file];

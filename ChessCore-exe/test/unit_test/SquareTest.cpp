@@ -740,3 +740,25 @@ TEST_CASE("ONPROMOTIONRANK BLACK", "[onPromotionRank()]") {
 	REQUIRE(!Square::onPromotionRank(fourth,BLACK));
 	REQUIRE(!Square::onPromotionRank(eighth,BLACK));
 }
+
+TEST_CASE("GET NUM SQUARES", "[getNumSquares()]") {
+	Square_t one = Square::getSquare("e1");
+	BoardMask_t region1 = Square::getSquare("b2")
+	| Square::getSquare("c2")
+	| Square::getSquare("d2")
+	| Square::getSquare("b3")
+	| Square::getSquare("c3")
+	| Square::getSquare("d3")
+	| Square::getSquare("b4")
+	| Square::getSquare("c4")
+	| Square::getSquare("d4");
+	BoardMask_t region2 = Square::getSquare("a1")
+	| Square::getSquare("c4")
+	| Square::getSquare("d2")
+	| Square::getSquare("b5")
+	| Square::getSquare("h8");
+	
+	REQUIRE(Square::getNumSquares(one) == 1);
+	REQUIRE(Square::getNumSquares(region1) == 9);
+	REQUIRE(Square::getNumSquares(region2) == 5);
+}

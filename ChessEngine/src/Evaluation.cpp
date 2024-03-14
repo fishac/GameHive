@@ -30,12 +30,12 @@ int ChessEngine::evaluateInternalState() {
 		wp = whitePieces.at(i);
 		bp = blackPieces.at(i);
 		whitePiecePoints += baseScoresTable.at(wp) + (
-			earlygamePieceTables[wp][i]*std::min(currentPhase,maxPhase) 
-			+ endgamePieceTables[wp][i]*std::max(maxPhase-currentPhase,0)
+			getWhiteEarlygameWeight(wp,i)*std::min(currentPhase,maxPhase) 
+			+ getWhiteEndgameWeight(wp,i)*std::max(maxPhase-currentPhase,0)
 		) / maxPhase;
 		blackPiecePoints += baseScoresTable.at(bp) + (
-			earlygamePieceTables[bp][63-i]*std::min(currentPhase,maxPhase)
-			+ endgamePieceTables[bp][63-i]*std::max(maxPhase-currentPhase,0)
+			getBlackEarlygameWeight(bp,i)*std::min(currentPhase,maxPhase)
+			+ getBlackEndgameWeight(bp,i)*std::max(maxPhase-currentPhase,0)
 		) / maxPhase;
 	}
 	
