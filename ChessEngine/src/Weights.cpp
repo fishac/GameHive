@@ -1,4 +1,5 @@
 #include "Weights.h"
+#include "ChessCore.h"
 
 const int pawnPhaseContribution = 0;
 const int knightPhaseContribution = 1;
@@ -174,3 +175,23 @@ const std::array<std::array<int,64>,7> endgamePieceTables = {{
 		10, 10, 10, 10, 10, 10, 10, 10
 	}
 }};
+
+int getWhiteEarlygameWeight(const Piece_t& p, const int& sq_idx) {
+	return earlygamePieceTables[p][sq_idx];
+}
+
+int getBlackEarlygameWeight(const Piece_t& p, const int& sq_idx) {
+	int sq_file = ChessCore::Square::getFile(sq_idx);
+	int sq_rank = ChessCore::Square::getRank(sq_idx);
+	return earlygamePieceTables[p][(7-sq_rank)*8+sq_file];
+}
+
+int getWhiteEndgameWeight(const Piece_t& p, const int& sq_idx, const bool& reflect) {
+	return endgamePieceTables[p][sq_idx];
+}
+
+int getBlackEndgameWeight(const Piece_t& p, const int& sq_idx, const bool& reflect) {
+	int sq_file = ChessCore::Square::getFile(sq_idx);
+	int sq_rank = ChessCore::Square::getRank(sq_idx);
+	return endgamePieceTables[p][(7-sq_rank)*8+sq_file];
+}
