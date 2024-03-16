@@ -33,6 +33,7 @@ public:
 	int getEvaluation();
 	void reportTTStats();
 	int getLastSearchTimeLimit();
+	int evaluateInternalState();
 private:
 	EngineBoardState* internalState;
 	TranspositionTable* tTable;
@@ -61,7 +62,6 @@ private:
 	bool shouldComputeMove();
 	bool shouldCheckNullMove(const int& beta);
 	ExtendedMove nullMove();
-	int evaluateInternalState();
 	int getSearchTimeLimit(int millisRemaining, int millisIncrement);
 	bool shouldHardTimeCutoff();
 	ExtendedMove search(int millisRemaining, int millisIncrement, bool strict_limit);

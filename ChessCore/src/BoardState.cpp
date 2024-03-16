@@ -774,7 +774,7 @@ int BoardState::getTotalMobility(const Color_t& c) {
 int BoardState::getWhiteTotalMobility() {
 	int total = 0;
 	for (int i=0; i<64; i++) {
-		if (whitePieces[i] != NOPIECE && blackPieces[i] != KING) {
+		if (whitePieces[i] != NOPIECE && whitePieces[i] != KING) {
 			total += Square::getNumSquares(visibility[i]);
 		}
 	}
