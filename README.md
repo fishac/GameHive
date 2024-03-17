@@ -3,8 +3,8 @@
 This repository contains a collection of games and engines to play against. 
 This project is currently in progress and the only completed game and engine is Chess, though I intend to later add Hex Chess (see [this video](https://www.youtube.com/watch?v=bgR3yESAEVE) by CGPGrey), and other games that interest me.
 
-The Chess Engine is currently available to play against on Lichess.org under the username [HoneybeeEngine](https://lichess.org/@/HoneybeeEngine). 
-Currently it accepts challenges up to 20 minutes base time with 20 minutes increment.
+The Chess Engine is deployed to a playable bot on on Lichess.org under the username [HoneybeeEngine](https://lichess.org/@/HoneybeeEngine). 
+Currently it accepts challenges up to 20 minutes base time with 20 seconds increment.
 
 The components of this project are:
 * ChessCore: Rules defining Chess board state, moves, move generation, etc.
@@ -26,3 +26,8 @@ I kept the evaluation function relatively simple, incorporating and considering 
 ### Tools
 
 I use CMake, MinGW GCC, Qt6, Catch2, pybind11, Python 3, Notepad++, and a Bash terminal in this project.
+
+### Why the name GameHive
+
+I like the theme of bees, hives, and such to fit the goal of developing an engine for Hex Chess. 
+Also my girlfriend's name is Melissa which comes from the word Honeybee.
