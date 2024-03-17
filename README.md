@@ -14,9 +14,14 @@ The components of this project are:
 * ChessEngine-bindings: Code to generate bindings for ChessEngine in different languages.
 * GameHive: A basic desktop GUI application written in C++ with Qt6 to play games against other players on the same machine or against the engines. This component is currently unstable when playing against an engine and will likely be replaced with a web application interface with JavaScript bindings to the Chess code.
 
-### Performance stats
+### Performance Stats
 
 Depending on the starting position, ChessEngine and ChessCore can compute up to around 750,000 variations per second. 
+
+### Chess Engine Ideas
+
+I incorporated many ideas in the Chess Engine's searching algorithms including negamax search, alpha-beta pruning, iterative deepening, quiescence search, static exchange evaluation, null move pruning, late move pruning, search extensions, move prioritization, and transposition tables.
+I kept the evaluation function relatively simple, incorporating and considering piece weights, piece-square weight tables, piece mobility, king safety, isolated pawns, doubled pawns, passed pawns, early-endgame weight pairs, and king distance-to-edge.
 
 ### Tools
 
