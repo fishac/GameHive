@@ -593,6 +593,15 @@ std::vector<Square_t> BoardState::getLegalMovesFromSquare(const Square_t& s) {
 	}
 }
 
+std::vector<int> BoardState::getLegalMovesFromSquareIdx(const int& sq_idx) {
+	std::vector<Square_t> legalMovesFromSquare = getLegalMovesFromSquare(Square::getSquare(sq_idx));
+	std::vector<int> legalMoveIdxFromSquare;
+	for (Square_t s : legalMovesFromSquare) {
+		legalMoveIdxFromSquare.push_back(Square::getIndex(s));
+	}
+	return legalMoveIdxFromSquare;
+}
+
 std::vector<ExtendedMove> BoardState::getLegalExtendedMoves() {
 	std::vector<ExtendedMove> moves;
 	moves.reserve(50);
@@ -608,6 +617,15 @@ std::vector<ExtendedMove> BoardState::getLegalExtendedMoves() {
 		return moves;
 	}
 	
+	return moves;
+}
+
+std::vector<ExtendedMoveIdx> BoardState::getLegalExtendedMoveIdxs() {
+	std::vector<ExtendedMove> extendedMoves = getLegalExtendedMoves();
+	std::vector<ExtendedMoveIdx> moves;
+	for(ExtendedMove m : extendedMoves) {
+		moves.push_back(MoveUtils::convertToExtendedMoveIdx(m));
+	}
 	return moves;
 }
 

@@ -23,6 +23,10 @@ bool BoardState::isMoveLegal(const ExtendedMove& m) {
 	return isMoveLegal(m.from, m.to);
 }
 
+bool BoardState::isMoveLegal(const ExtendedMoveIdx& m) {
+	return isMoveLegal(Square::getSquare(m.fromIdx), Square::getSquare(m.toIdx));
+}
+  
 bool BoardState::isLegalFromSquare(const Square_t& sq) {
 	int sq_idx = Square::getIndex(sq);
 	return legalMoves[sq_idx] != NO_SQUARE;

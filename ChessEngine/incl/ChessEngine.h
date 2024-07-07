@@ -46,8 +46,9 @@ private:
 	int maxDepth = 12;
 	int minSearchTimeMillis = 100;
 	int evaluation = 0;
-	int worstPossibleScore = -1e9;
-	int bestPossibleScore = 1e9;
+	const int worstPossibleScore = -1e9;
+	const int bestPossibleScore = 1e9;
+	const int checkmatingScore = 1e9+3;
 	int qDepthLimit = 10;
 	int maxExtensions = 6;
 	bool inNullMoveSearch = false;

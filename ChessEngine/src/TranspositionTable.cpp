@@ -52,7 +52,7 @@ void TranspositionTable::provideEntry(const TTEntry& providedEntry) {
 		numIndexCollisions++;
 	}
 	
-	if (currentEntry.zobristKey == providedEntry.zobristKey & MAX_ENTRIES_MASK) {
+	if (currentEntry.zobristKey == providedEntry.zobristKey) {
 		numZobristKeyCollisions++;
 	}
 	

@@ -19,6 +19,12 @@ namespace MoveUtils {
 		return ret;
 	}
 	
+	std::string getString(ExtendedMoveIdx& m) {
+		ExtendedMove extendedMove = {Square::getSquare(m.fromIdx),Square::getSquare(m.toIdx),m.promotionPiece};
+		std::string ret = MoveUtils::getString(extendedMove);
+		return ret;
+	}
+	
 	std::string getString(ExtendedMove& m, const Color_t& turnColor) {
 		std::string ret = Square::getString(m.from) + Square::getString(m.to);
 		if (m.promotionPiece != NOPIECE) {
@@ -49,6 +55,14 @@ namespace MoveUtils {
 		} else {
 			return {NO_SQUARE,NO_SQUARE,NOPIECE};
 		}
+	}
+	
+	ExtendedMoveIdx convertToExtendedMoveIdx(const ExtendedMove& m) {
+		return {
+			Square::getIndex(m.from),
+			Square::getIndex(m.to),
+			m.promotionPiece
+		};
 	}
 }
 }

@@ -242,15 +242,10 @@ std::string BoardState::toFEN() {
 
 Piece_t BoardState::getPieceOnSquare(const Square_t& s) {
 	int sq_idx = Square::getIndex(s);
-	Piece_t p = whitePieces[sq_idx];
-	if (p == NOPIECE) {
-		return blackPieces[sq_idx];
-	} else { 
-		return p;
-	}
+	return getPieceOnSquareIdx(sq_idx);
 }
 
-Piece_t BoardState::getPieceOnSquareIndex(const int& sq_idx) {
+Piece_t BoardState::getPieceOnSquareIdx(const int& sq_idx) {
 	Piece_t p = whitePieces[sq_idx];
 	if (!Piece::isValidPiece(p)) {
 		p = blackPieces[sq_idx];
@@ -264,11 +259,24 @@ Piece_t BoardState::getPieceOnSquareIndex(const int& sq_idx) {
 
 Color_t BoardState::getColorOnSquare(const Square_t& s) {
 	int sq_idx = Square::getIndex(s);
+	return getColorOnSquareIdx(sq_idx);
+}
+
+Color_t BoardState::getColorOnSquareIdx(const int& sq_idx) {
 	if (blackPieces[sq_idx] != NOPIECE) {
 		return BLACK;
 	} else {
 		return WHITE;
 	}
+}
+
+bool BoardState::isSquareOccupied(const Square_t& s) {
+	int sq_idx = Square::getIndex(s);
+	return isSquareIdxOccupied(sq_idx);
+}
+
+bool BoardState::isSquareIdxOccupied(const int& sq_idx) {
+	return getPieceOnSquareIdx(sq_idx)==NOPIECE;
 }
 	
 Color_t BoardState::getTurnColor() {
@@ -363,6 +371,14 @@ Square_t BoardState::getWhiteKingSquare() {
 
 Square_t BoardState::getBlackKingSquare() {
 	return blackKingSquare;
+}
+
+int BoardState::getWhiteKingSquareIdx() {
+	return Square::getIndex(whiteKingSquare);
+}
+
+int BoardState::getBlackKingSquareIdx() {
+	return Square::getIndex(blackKingSquare);
 }
 
 const int& BoardState::getNumWhitePawns() {
@@ -789,6 +805,14 @@ int BoardState::getBlackTotalMobility() {
 		}
 	}
 	return total;
+}
+
+int BoardState::getTotalVisibilityFromSquare(const Square_t& sq) {
+	return Square::getNumSquares(visibility[Square::getIndex(sq)]);
+}
+
+int BoardState::getTotalVisibilityFromIndex(const int& sq_idx) {
+	return Square::getNumSquares(visibility[sq_idx]);
 }
 
 void BoardState::clearHistory() {

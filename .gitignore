@@ -46,3 +46,8 @@ _deps
 GameSuite_autogen
 **/build/*
 **/*.egg*
+
+# Custom
+ChessEngine-bindings/javascript/**/*.js
+ChessEngine-bindings/javascript/**/*.wasm
+ChessEngine-bindings/javascript/**/src/*

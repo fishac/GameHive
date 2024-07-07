@@ -19,7 +19,6 @@ bool BoardState::makeMove(const Square_t& from, const Square_t& to) {
 	}
 }
 
-
 void BoardState::makeLegalMove(const Square_t& from, const Square_t& to) {
 	//std::cout << "Making legal move" << std::endl;
 	// Set up a new MoveRecord
@@ -142,6 +141,14 @@ bool BoardState::makeMove(const ExtendedMove& m) {
 		return makeMove(m.from,m.to);
 	} else {
 		return makeMoveAndPromote(m.from,m.to,m.promotionPiece);
+	}
+}
+
+bool BoardState::makeMove(const ExtendedMoveIdx& m) {
+	if (m.promotionPiece == NOPIECE) {
+		return makeMove(Square::getSquare(m.fromIdx),Square::getSquare(m.toIdx));
+	} else {
+		return makeMoveAndPromote(Square::getSquare(m.fromIdx),Square::getSquare(m.toIdx),m.promotionPiece);
 	}
 }
 

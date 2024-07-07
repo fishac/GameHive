@@ -18,7 +18,8 @@ extern const int doubledPawnPenalty;
 extern const int kingDistanceToEdgePenalty;
 
 extern const std::array<int,20> kingSafetyPenalties;
-extern const std::array<int,20> mobilityScores;
+extern const std::array<int,7> earlygameMobilityWeights;
+extern const std::array<int,7> endgameMobilityWeights;
 extern const std::array<int,7> baseScoresTable;
 extern const std::array<std::array<int,64>,7> earlygamePieceTables;
 extern const std::array<std::array<int,64>,7> endgamePieceTables;

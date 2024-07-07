@@ -16,6 +16,12 @@ struct ExtendedMove {
 	Piece_t promotionPiece;
 };
 
+struct ExtendedMoveIdx {
+	int fromIdx;
+	int toIdx;
+	Piece_t promotionPiece;
+};
+
 struct MoveRecord {
 	Square_t from;
 	Square_t to;
@@ -36,9 +42,11 @@ namespace ChessCore {
 namespace MoveUtils {
 	std::string getString(Move& m);
 	std::string getString(ExtendedMove& m);
+	std::string getString(ExtendedMoveIdx& m);
 	std::string getString(ExtendedMove& m, const Color_t& turnColor);
 	bool extendedMoveEquals(const ExtendedMove& m1, const ExtendedMove& m2);
 	ExtendedMove getExtendedMove(std::string moveString);
+	ExtendedMoveIdx convertToExtendedMoveIdx(const ExtendedMove& m);
 }
 }
 

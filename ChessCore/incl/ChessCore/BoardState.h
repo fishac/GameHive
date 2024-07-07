@@ -29,10 +29,12 @@ public:
 	bool makeMoveAndPromote(const Square_t& from, const Square_t& to, const Piece_t& promotion_piece);
 	//bool makeMoveAndPromote(const Move& m, const Piece_t& promotion_piece);
 	bool makeMove(const ExtendedMove& m);
+	bool makeMove(const ExtendedMoveIdx& m);
 	void updateLegality();
 	bool isMoveLegal(const Square_t& from, const Square_t& to);
 	bool isMoveLegal(const Move& m);
 	bool isMoveLegal(const ExtendedMove& m);
+	bool isMoveLegal(const ExtendedMoveIdx& m);
 	bool getCheckStatus();
 	bool getCheckmateStatus();
 	bool getStalemateStatus();
@@ -40,6 +42,7 @@ public:
 	bool isDrawByInsufficientMaterial();
 	std::vector<Move> getLegalMoves();
 	std::vector<ExtendedMove> getLegalExtendedMoves();
+	std::vector<ExtendedMoveIdx> getLegalExtendedMoveIdxs();
 	std::vector<Square_t> getWhitePawnSquares();
 	std::vector<Square_t> getBlackPawnSquares();
 	std::vector<Square_t> getWhiteKnightSquares();
@@ -54,6 +57,8 @@ public:
 	const std::array<Piece_t,64>& getBlackPieces();
 	Square_t getWhiteKingSquare();
 	Square_t getBlackKingSquare();
+	int getWhiteKingSquareIdx();
+	int getBlackKingSquareIdx();
 	const int& getNumWhitePawns();
 	const int& getNumWhiteKnights();
 	const int& getNumWhiteBishops();
@@ -83,6 +88,7 @@ public:
 	MoveRecord getLastMoveRecord();
 	bool isLegalFromSquare(const Square_t& s);
 	std::vector<Square_t> getLegalMovesFromSquare(const Square_t& s);
+	std::vector<int> getLegalMovesFromSquareIdx(const int& sq_idx);
 	bool moveRequiresPromotion(const Square_t& from, const Square_t& to);
 	bool moveRequiresPromotion(const Move& m);
 	bool moveRequiresPromotion(const ExtendedMove& m);
@@ -113,8 +119,11 @@ public:
 	MoveRecord getActivePreviousMoveRecord();
 	//bool activeStateEquals(BoardState& bs);
 	Piece_t getPieceOnSquare(const Square_t& s);
-	Piece_t getPieceOnSquareIndex(const int& sq_idx);
+	Piece_t getPieceOnSquareIdx(const int& sq_idx);
 	Color_t getColorOnSquare(const Square_t& s);
+	Color_t getColorOnSquareIdx(const int& sq_idx);
+	bool isSquareOccupied(const Square_t& s);
+	bool isSquareIdxOccupied(const int& sq_idx);
 	bool getKingsideCastleRights(const Color_t& c);
 	bool getQueensideCastleRights(const Color_t& c);
 	uint64_t getZobristBoardHash();
@@ -137,6 +146,8 @@ public:
 	int getTotalMobility(const Color_t& c);
 	int getWhiteTotalMobility();
 	int getBlackTotalMobility();
+	int getTotalVisibilityFromSquare(const Square_t& sq);
+	int getTotalVisibilityFromIndex(const int& sq_idx);
 	void clearHistory();
 protected: 
 	void makeLegalMove(const Square_t& from, const Square_t& to);

@@ -15,7 +15,7 @@ int ChessEngine::getCurrentPhase() {
 
 int ChessEngine::evaluateInternalState() {
 	if (internalState->getCheckmateStatus()) {
-		return -(bestPossibleScore+3);
+		return -(checkmatingScore);
 	} else if (internalState->getStalemateStatus()) {
 		return 0;
 	}
@@ -23,20 +23,36 @@ int ChessEngine::evaluateInternalState() {
 	const std::array<Piece_t,64>& blackPieces = internalState->getBlackPieces();
 	int whitePiecePoints = 0;
 	int blackPiecePoints = 0;
+	int whiteMobilityScore = 0;
+	int blackMobilityScore = 0;
 	int currentPhase = getCurrentPhase();
 	Piece_t wp = NOPIECE;
 	Piece_t bp = NOPIECE;
+	int tempMobility = 0;
 	for(int i=0; i<64; i++) {
-		wp = whitePieces.at(i);
-		bp = blackPieces.at(i);
-		whitePiecePoints += baseScoresTable.at(wp) + (
-			getWhiteEarlygameWeight(wp,i)*std::min(currentPhase,maxPhase) 
-			+ getWhiteEndgameWeight(wp,i)*std::max(maxPhase-currentPhase,0)
-		) / maxPhase;
-		blackPiecePoints += baseScoresTable.at(bp) + (
-			getBlackEarlygameWeight(bp,i)*std::min(currentPhase,maxPhase)
-			+ getBlackEndgameWeight(bp,i)*std::max(maxPhase-currentPhase,0)
-		) / maxPhase;
+		if (whitePieces[i] != NOPIECE && whitePieces[i] != KING) {
+			wp = whitePieces.at(i);
+			whitePiecePoints += baseScoresTable.at(wp) + (
+				getWhiteEarlygameWeight(wp,i)*std::min(currentPhase,maxPhase) 
+				+ getWhiteEndgameWeight(wp,i)*std::max(maxPhase-currentPhase,0)
+			) / maxPhase;
+			tempMobility = internalState->getTotalVisibilityFromIndex(i);
+			whiteMobilityScore += (
+				earlygameMobilityWeights[wp]*tempMobility*std::min(currentPhase,maxPhase) 
+				+ endgameMobilityWeights[wp]*tempMobility*std::max(maxPhase-currentPhase,0)
+			) / maxPhase;
+		} else if (blackPieces[i] != NOPIECE && blackPieces[i] != KING) {
+			bp = blackPieces.at(i);
+			blackPiecePoints += baseScoresTable.at(bp) + (
+				getBlackEarlygameWeight(bp,i)*std::min(currentPhase,maxPhase)
+				+ getBlackEndgameWeight(bp,i)*std::max(maxPhase-currentPhase,0)
+			) / maxPhase;
+			tempMobility = internalState->getTotalVisibilityFromIndex(i);
+			blackMobilityScore += (
+				earlygameMobilityWeights[bp]*tempMobility*std::min(currentPhase,maxPhase) 
+				+ endgameMobilityWeights[bp]*tempMobility*std::max(maxPhase-currentPhase,0)
+			) / maxPhase;
+		}
 	}
 	
 	int whiteKingSafety = kingSafetyPenalties[
@@ -49,19 +65,6 @@ int ChessEngine::evaluateInternalState() {
 		std::max(
 			internalState->getTotalAttacksOnRegionByWhite(getSensitiveKingRegion(BLACK)),
 			(int) kingSafetyPenalties.size()
-		)
-	];
-	
-	int whiteMobility = mobilityScores[
-		std::max(
-			internalState->getWhiteTotalMobility(),
-			(int) mobilityScores.size()
-		)
-	];
-	int blackMobility = mobilityScores[
-		std::max(
-			internalState->getBlackTotalMobility(),
-			(int) mobilityScores.size()
 		)
 	];
 	
@@ -85,7 +88,7 @@ int ChessEngine::evaluateInternalState() {
 	return turnColorMultiplier*(
 		(whitePiecePoints - blackPiecePoints)
 		+ (whiteKingSafety - blackKingSafety)
-		//+ (whiteMobility - blackMobility)
+		+ (whiteMobilityScore - blackMobilityScore)
 		+ passedPawnScore*(numWhitePassedPawns - numBlackPassedPawns)
 		+ isolatedPawnPenalty*(numWhiteIsolatedPawns - numBlackIsolatedPawns)
 		+ doubledPawnPenalty*(numWhiteDoubledPawns - numBlackDoubledPawns)

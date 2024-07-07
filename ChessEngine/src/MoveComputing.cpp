@@ -140,6 +140,7 @@ ExtendedMove ChessEngine::search(int millisRemaining, int millisIncrement, bool 
 				moveScore = -searchInternal(currentDepthLimit,nextDepthRemaining+extension,1,1,nextMoves,-beta,-currentBestScore);
 			}
 			unmakeMove(0);
+			
 			if (shouldHardTimeCutoff()) {
 				hardTimeCutoff = true;
 				unmakeMove(0);
@@ -149,6 +150,9 @@ ExtendedMove ChessEngine::search(int millisRemaining, int millisIncrement, bool 
 			if (moveScore > currentBestScore) {
 				currentBestMove = move;
 				currentBestScore = moveScore;
+			}
+			if (currentBestScore == checkmatingScore) {
+				break;
 			}
 			moveIdx++;
 		}
@@ -163,6 +167,9 @@ ExtendedMove ChessEngine::search(int millisRemaining, int millisIncrement, bool 
 		bestMove = currentBestMove;
 		bestScore = currentBestScore;
 		
+		if (bestScore == checkmatingScore) {
+			break;
+		}
 		// Check if we need to stop the search
 		currentTime = steady_clock::now();
 		cumulativeSearchTime = duration_cast<milliseconds>(currentTime - startSearchTime).count();
