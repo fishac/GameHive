@@ -7,8 +7,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_BUILD_TYPE Release)
 set(CMAKE_CXX_FLAGS_RELEASE "-Os")
 
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/build/lib/ChessCore)
-add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/build/lib/ChessEngine)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/lib/ChessCore)
+add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/lib/ChessEngine)
 
 set(CMAKE_SKIP_INSTALL_ALL_DEPENDENCY true)
 
