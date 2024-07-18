@@ -15,7 +15,11 @@ set(CMAKE_SKIP_INSTALL_ALL_DEPENDENCY true)
 add_executable(ChessEngineJS src/ChessEngineJS.cpp)
 
 target_link_libraries(ChessEngineJS PUBLIC ChessEngine ChessCore)
-set_target_properties(ChessEngineJS PROPERTIES LINK_FLAGS "--bind")
+target_link_options(ChessEngineJS 
+	PUBLIC "--bind" 
+	PUBLIC "-sMODULARIZE=1"
+	PUBLIC "-sEXPORT_NAME=ChessEngineJS"
+)
 
 
 install(TARGETS ChessEngineJS

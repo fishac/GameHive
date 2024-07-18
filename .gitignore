@@ -47,6 +47,10 @@ GameSuite_autogen
 **/build/*
 **/*.egg*
 
+# JS 
+**/node_modules/*
+**/package-lock.json
+
 # Custom
-ChessEngine-bindings/javascript/**/*.js
-ChessEngine-bindings/javascript/**/*.wasm
+ChessEngine-bindings/javascript/test/ChessEngineJS.js
+ChessEngine-bindings/javascript/test/ChessEngineJS.wasm
