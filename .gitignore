@@ -50,4 +50,3 @@ GameSuite_autogen
 # Custom
 ChessEngine-bindings/javascript/**/*.js
 ChessEngine-bindings/javascript/**/*.wasm
-ChessEngine-bindings/javascript/**/src/*
