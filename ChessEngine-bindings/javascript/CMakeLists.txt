@@ -18,6 +18,7 @@ target_link_libraries(ChessEngineJS PUBLIC ChessEngine ChessCore)
 target_link_options(ChessEngineJS 
 	PUBLIC "--bind" 
 	PUBLIC "-sMODULARIZE=1"
+	PUBLIC "-sALLOW_MEMORY_GROWTH=1"
 	PUBLIC "-sEXPORT_NAME=ChessEngineJS"
 )
 

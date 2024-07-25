@@ -11,10 +11,11 @@ EMSCRIPTEN_BINDINGS(ChessEngineJS) {
 		.field("to",&ExtendedMoveIdx::toIdx)
 		.field("promotionPiece",&ExtendedMoveIdx::promotionPiece);
 	function("getMoveString",select_overload<std::string(ExtendedMoveIdx&)>(&MoveUtils::getString));
+	register_vector<ExtendedMoveIdx>("VectorMove");
 	class_<BoardState>("BoardState")
 		.constructor<const bool&>()
 		.function("setFEN", &BoardState::setFEN)
-		.function("isLegalFromSquare", &BoardState::isLegalFromSquare)
+		.function("isLegalFromSquare", &BoardState::isLegalFromSquareIdx)
 		.function("getLegalMoves", &BoardState::getLegalExtendedMoveIdxs)
 		.function("getLegalMovesFromSquare", &BoardState::getLegalMovesFromSquareIdx)
 		.function("makeMove", select_overload<bool(const ExtendedMoveIdx&)>(&BoardState::makeMove))

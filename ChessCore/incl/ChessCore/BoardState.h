@@ -87,6 +87,7 @@ public:
 	int getActivePly();
 	MoveRecord getLastMoveRecord();
 	bool isLegalFromSquare(const Square_t& s);
+	bool isLegalFromSquareIdx(const int& sq_idx);
 	std::vector<Square_t> getLegalMovesFromSquare(const Square_t& s);
 	std::vector<int> getLegalMovesFromSquareIdx(const int& sq_idx);
 	bool moveRequiresPromotion(const Square_t& from, const Square_t& to);

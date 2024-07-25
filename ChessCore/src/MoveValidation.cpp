@@ -32,6 +32,10 @@ bool BoardState::isLegalFromSquare(const Square_t& sq) {
 	return legalMoves[sq_idx] != NO_SQUARE;
 }
 
+bool BoardState::isLegalFromSquareIdx(const int& sq_idx) {
+	return legalMoves[sq_idx] != NO_SQUARE;
+}
+
 bool BoardState::moveRequiresPromotion(const Square_t& from, const Square_t& to) {
 	return getPieces(turnColor)[Square::getIndex(from)] == PAWN
 	&& (
