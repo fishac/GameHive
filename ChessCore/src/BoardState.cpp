@@ -276,7 +276,7 @@ bool BoardState::isSquareOccupied(const Square_t& s) {
 }
 
 bool BoardState::isSquareIdxOccupied(const int& sq_idx) {
-	return getPieceOnSquareIdx(sq_idx)==NOPIECE;
+	return !(getPieceOnSquareIdx(sq_idx)==NOPIECE);
 }
 	
 Color_t BoardState::getTurnColor() {

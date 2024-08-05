@@ -20,6 +20,7 @@ test('BoardState definition', () => {
 		expect(bs).toBeTruthy();
 		
 		expect(bs.setFEN).toBeTruthy()
+		expect(bs.toFEN).toBeTruthy()
 		expect(bs.isLegalFromSquare).toBeTruthy()
 		expect(bs.getLegalMoves).toBeTruthy()
 		expect(bs.getLegalMovesFromSquare).toBeTruthy()
@@ -33,11 +34,12 @@ test('BoardState definition', () => {
 		expect(bs.getTurnColor).toBeTruthy()
 		expect(bs.getWhiteKingSquare).toBeTruthy()
 		expect(bs.getBlackKingSquare).toBeTruthy()
-		expect(bs.getPieceOnSquareIdx).toBeTruthy()
-		expect(bs.getColorOnSquareIdx).toBeTruthy()
+		expect(bs.getPieceOnSquare).toBeTruthy()
+		expect(bs.getColorOnSquare).toBeTruthy()
 		expect(bs.isSquareOccupied).toBeTruthy()
 		
 		expect(typeof bs.setFEN).toBe("function")
+		expect(typeof bs.toFEN).toBe("function")
 		expect(typeof bs.isLegalFromSquare).toBe("function")
 		expect(typeof bs.getLegalMoves).toBe("function")
 		expect(typeof bs.getLegalMovesFromSquare).toBe("function")
@@ -51,8 +53,8 @@ test('BoardState definition', () => {
 		expect(typeof bs.getTurnColor).toBe("function")
 		expect(typeof bs.getWhiteKingSquare).toBe("function")
 		expect(typeof bs.getBlackKingSquare).toBe("function")
-		expect(typeof bs.getPieceOnSquareIdx).toBe("function")
-		expect(typeof bs.getColorOnSquareIdx).toBe("function")
+		expect(typeof bs.getPieceOnSquare).toBe("function")
+		expect(typeof bs.getColorOnSquare).toBe("function")
 		expect(typeof bs.isSquareOccupied).toBe("function")
 	});
 });
@@ -65,6 +67,7 @@ test('ChessEngine definition', () => {
 		expect(eng.suggestMove).toBeTruthy();
 		expect(eng.provideMove).toBeTruthy();
 		expect(eng.setFEN).toBeTruthy();
+		expect(eng.getFEN).toBeTruthy();
 		expect(eng.getMoveSearchDepth).toBeTruthy();
 		expect(eng.getMoveSearchTime).toBeTruthy();
 		expect(eng.getMoveSearchTimeLimit).toBeTruthy();
@@ -74,6 +77,7 @@ test('ChessEngine definition', () => {
 		expect(typeof eng.suggestMove).toBe("function");
 		expect(typeof eng.provideMove).toBe("function");
 		expect(typeof eng.setFEN).toBe("function");
+		expect(typeof eng.getFEN).toBe("function");
 		expect(typeof eng.getMoveSearchDepth).toBe("function");
 		expect(typeof eng.getMoveSearchTime).toBe("function");
 		expect(typeof eng.getMoveSearchTimeLimit).toBe("function");
@@ -131,7 +135,8 @@ test('BoardState functionality', () => {
 		const legalMovesFromB1Array = new Array(bs.getLegalMovesFromSquare(1).size()).fill(0).map((_, id) => bs.getLegalMovesFromSquare(1).get(id));
 		expect(legalMovesFromB1Array.length).toBe(2);
 		expect(legalMovesFromB1Array.some(m => (
-			m.from === 1 && m.to === 16 && m.promotionPiece === 0
+			//m.from === 1 && m.to === 16 && m.promotionPiece === 0
+			m === 16
 		))).toBe(true);
 		
 		expect(bs.makeMove({from: 16, to: 17, promotionPiece: 1})).toBe(false);
@@ -147,14 +152,16 @@ test('BoardState functionality', () => {
 		const legalMovesFromG8Array = new Array(bs.getLegalMovesFromSquare(62).size()).fill(0).map((_, id) => bs.getLegalMovesFromSquare(62).get(id));
 		expect(legalMovesFromG8Array.length).toBe(2);
 		expect(legalMovesFromG8Array.some(m => (
-			m.from === 62 && m.to === 47 && m.promotionPiece === 0
+			//m.from === 62 && m.to === 47 && m.promotionPiece === 0
+			m === 47
 		))).toBe(true);
 		
 		expect(bs.makeMove({from: 16, to: 17, promotionPiece: 1})).toBe(false);
 		expect(bs.makeMove({from: 62, to: 47, promotionPiece: 0})).toBe(true);
+		expect(bs.getTurnColor()).toBe(true);
 		
 		expect(bs.isMoveLegal({from: 16, to: 17, promotionPiece: 1})).toBe(false);
-		expect(bs.isMoveLegal({from: 6, to: 15, promotionPiece: 0})).toBe(true);
+		expect(bs.isMoveLegal({from: 6, to: 21, promotionPiece: 0})).toBe(true);
 		
 		expect(bs.getCheckStatus()).toBe(false);
 		expect(bs.getCheckmateStatus()).toBe(false);
@@ -200,10 +207,11 @@ test('BoardState functionality', () => {
 		expect(bs.isSquareOccupied(63)).toBe(true);
 		expect(bs.isSquareOccupied(62)).toBe(false);
 	});
+});
 	
 test('BoardState functionality', () => {
 	return ChessEngineJS().then(ce => {
 		const eng = new ce.ChessEngine();
-		
+		expect(true).toBe(true);
 	});
 });

@@ -12,10 +12,11 @@ EMSCRIPTEN_BINDINGS(ChessEngineJS) {
 		.field("promotionPiece",&ExtendedMoveIdx::promotionPiece);
 	function("getMoveString",select_overload<std::string(ExtendedMoveIdx&)>(&MoveUtils::getString));
 	register_vector<ExtendedMoveIdx>("VectorMove");
+	register_vector<int>("VectorSquare");
 	class_<BoardState>("BoardState")
 		.constructor<const bool&>()
 		.function("setFEN", &BoardState::setFEN)
-		.function("getFEN", &BoardState::getFEN)
+		.function("toFEN", &BoardState::toFEN)
 		.function("isLegalFromSquare", &BoardState::isLegalFromSquareIdx)
 		.function("getLegalMoves", &BoardState::getLegalExtendedMoveIdxs)
 		.function("getLegalMovesFromSquare", &BoardState::getLegalMovesFromSquareIdx)
@@ -27,8 +28,8 @@ EMSCRIPTEN_BINDINGS(ChessEngineJS) {
 		.function("isDrawByRepitition", &BoardState::isDrawByRepitition)
 		.function("isDrawByInsufficientMaterial", &BoardState::isDrawByInsufficientMaterial)
 		.function("getTurnColor", &BoardState::getTurnColor)
-		.function("getWhiteKingSquare", &BoardState::getWhiteKingSquare)
-		.function("getBlackKingSquare", &BoardState::getBlackKingSquare)
+		.function("getWhiteKingSquare", &BoardState::getWhiteKingSquareIdx)
+		.function("getBlackKingSquare", &BoardState::getBlackKingSquareIdx)
 		.function("getPieceOnSquare", &BoardState::getPieceOnSquareIdx)
 		.function("getColorOnSquare", &BoardState::getColorOnSquareIdx)
 		.function("isSquareOccupied", &BoardState::isSquareIdxOccupied)
