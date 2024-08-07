@@ -19,6 +19,15 @@ ExtendedMove ChessEngine::suggestMove(int millisRemaining, int millisIncrement, 
 	return ret;
 }
 
+ExtendedMoveIdx ChessEngine::suggestMoveIdx(int millisRemaining, int millisIncrement, bool strict_limit) {
+	ExtendedMove ret = computeBestMove(millisRemaining,millisIncrement,strict_limit);
+	return {
+		ChessCore::Square::getIndex(ret.from),
+		ChessCore::Square::getIndex(ret.to),
+		ret.promotionPiece
+	};
+}
+
 ExtendedMove ChessEngine::computeBestMove(int millisRemaining, int millisIncrement, bool strict_limit) {
 	numScannedNodes = 1;
 	numScannedLeaves = 0;

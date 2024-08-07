@@ -18,6 +18,8 @@ public:
 	ChessEngine();
 	ExtendedMove makeMove(int millisRemaining, int millisIncrement, bool strict_limit);
 	ExtendedMove suggestMove(int millisRemaining, int millisIncrement, bool strict_limit);
+	ExtendedMoveIdx suggestMoveIdx(int millisRemaining, int millisIncrement, bool strict_limit);
+	bool provideMoveIdx(const ExtendedMoveIdx& m);
 	bool provideMove(const ExtendedMove& m);
 	void setMaxDepth(int depth);
 	void setMinDepth(int depth);

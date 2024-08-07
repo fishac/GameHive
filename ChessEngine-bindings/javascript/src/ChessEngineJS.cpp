@@ -36,8 +36,8 @@ EMSCRIPTEN_BINDINGS(ChessEngineJS) {
 		;
 	class_<ChessEngine>("ChessEngine")
 		.constructor<>()
-		.function("suggestMove", &ChessEngine::suggestMove)
-		.function("provideMove", &ChessEngine::provideMove)
+		.function("suggestMove", &ChessEngine::suggestMoveIdx)
+		.function("provideMove", &ChessEngine::provideMoveIdx)
 		.function("setFEN", &ChessEngine::setFEN)
 		.function("getFEN", &ChessEngine::getFEN)
 		.function("getMoveSearchDepth", &ChessEngine::getMoveSearchDepth)

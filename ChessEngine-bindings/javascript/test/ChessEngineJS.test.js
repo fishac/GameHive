@@ -206,12 +206,45 @@ test('BoardState functionality', () => {
 		expect(bs.isSquareOccupied(1)).toBe(false);
 		expect(bs.isSquareOccupied(63)).toBe(true);
 		expect(bs.isSquareOccupied(62)).toBe(false);
+		
+		const FEN = "3k4/p6p/8/8/1Pp5/8/3PP3/K7 b - b3 1 1";
+		bs.setFEN(FEN);
+		expect(bs.toFEN()).toBe(FEN);
 	});
 });
 	
-test('BoardState functionality', () => {
+test('ChessEngine functionality', () => {
 	return ChessEngineJS().then(ce => {
 		const eng = new ce.ChessEngine();
-		expect(true).toBe(true);
+		
+		const FEN = "3k4/p6p/8/8/1Pp5/8/3PP3/K7 b - b3 1 1";
+		eng.setFEN(FEN);
+		expect(eng.getFEN()).toBe(FEN);
+		
+		const move = {from: 26, to: 17, promotionPiece: 0};
+		const suggestedMove = eng.suggestMove(5000,0,true);
+		expect(move.from === suggestedMove.from).toBe(true);
+		expect(move.to === suggestedMove.to).toBe(true);
+		expect(move.promotionPiece === suggestedMove.promotionPiece).toBe(true);
+		
+		expect(eng.provideMove(move)).toBe(true);
+		const movedFEN = "3k4/p6p/8/8/8/1p6/3PP3/K7 w - - 0 2";
+		expect(eng.getFEN()).toBe(movedFEN);
+		
+		const moveSearchDepth = eng.getMoveSearchDepth()
+		const moveSearchTime = eng.getMoveSearchTime()
+		const moveSearchTimeLimit = eng.getMoveSearchTimeLimit()
+		const wasHardTimeCutoff = eng.searchWasHardTimeCutoff()
+		const numScannedNodes = eng.getNumScannedNodes()
+		
+		expect(typeof moveSearchDepth).toBe("number");
+		expect(typeof moveSearchTime).toBe("number");
+		expect(typeof moveSearchTimeLimit).toBe("number");
+		expect(typeof wasHardTimeCutoff).toBe("boolean");
+		expect(typeof numScannedNodes).toBe("number");
+		expect(moveSearchDepth).toBeGreaterThan(0);
+		expect(moveSearchTime).toBeGreaterThan(0);
+		expect(moveSearchTimeLimit).toBeGreaterThan(0);
+		expect(numScannedNodes).toBeGreaterThan(0);
 	});
 });
