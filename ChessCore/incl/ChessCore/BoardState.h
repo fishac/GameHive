@@ -93,6 +93,7 @@ public:
 	bool moveRequiresPromotion(const Square_t& from, const Square_t& to);
 	bool moveRequiresPromotion(const Move& m);
 	bool moveRequiresPromotion(const ExtendedMove& m);
+	bool moveRequiresPromotion(const ExtendedMoveIdx& m);
 	bool moveIsEnPassant(const Square_t& from, const Square_t& to);
 	bool moveIsEnPassant(const Move& m);
 	bool moveIsEnPassant(const ExtendedMove& m);

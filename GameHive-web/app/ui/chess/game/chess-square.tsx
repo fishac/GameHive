@@ -4,6 +4,8 @@ import {CSS} from '@dnd-kit/utilities';
 import {TPiece} from '@/app/lib/piece';
 import {TSquare} from '@/app/lib/square';
 import { IBoardState } from '@/app/lib/board-state';
+import PromotionMenu from './promotion-menu';
+import { IPromotionContext, isValidPromotionContext } from '@/app/lib/promotions';
 
 function getPieceFilename(piece: TPiece, pieceColor: boolean): string {
     if (piece > 0) {
@@ -44,10 +46,11 @@ function getSquareStatus({sq, isOver, isDragging, isLegalToSquare, boardState}: 
     }
 }
 
-export default function ChessSquare({square, rank, file, piece, pieceColor, isLegalFromSquare, isLegalToSquare, boardState}: {square: TSquare, rank: number, file: number, piece: TPiece, pieceColor: boolean, isLegalFromSquare: boolean, isLegalToSquare: boolean, boardState: IBoardState}) {
+export default function ChessSquare({square, rank, file, piece, pieceColor, isLegalFromSquare, isLegalToSquare, boardState, promotionContext, onPromotionSelection}: {square: TSquare, rank: number, file: number, piece: TPiece, pieceColor: boolean, isLegalFromSquare: boolean, isLegalToSquare: boolean, boardState: IBoardState, promotionContext: IPromotionContext, onPromotionSelection: any}) {
+    const promotionMenuOpen: boolean = isValidPromotionContext(promotionContext, boardState);
     const draggable: {attributes: any, listeners: any, setNodeRef: any, transform: any, isDragging: any} = useDraggable({
         id: square,
-        disabled: !isLegalFromSquare
+        disabled: (!isLegalFromSquare || promotionMenuOpen)
     });
     const draggableStyle = {
     // Outputs `translate3d(x, y, 0)`
@@ -58,10 +61,8 @@ export default function ChessSquare({square, rank, file, piece, pieceColor, isLe
         id: square,
         disabled: !isLegalToSquare
     });
-
     
     const squareStatus: number = getSquareStatus({sq: square, isOver: droppable.isOver, isDragging: draggable.isDragging, isLegalToSquare, boardState});
-
 
     return (
         <div className={clsx(
@@ -81,7 +82,7 @@ export default function ChessSquare({square, rank, file, piece, pieceColor, isLe
                     "bg-purple-400 bg-opacity-80": (squareStatus == 4)
                 })}
             >
-            {(piece>0) && 
+            {(piece>0 && promotionContext.from !== square) && 
                 <img 
                     src={'/pieces/' + getPieceFilename(piece,pieceColor) + '.svg'}  
                     className="absolute w-full h-full"
@@ -91,10 +92,20 @@ export default function ChessSquare({square, rank, file, piece, pieceColor, isLe
                     {...(draggable.attributes)}
                 />
             }
-            {(piece>0) && draggable.isDragging && 
+            {(piece>0) && (draggable.isDragging || promotionContext.from === square) && 
                 <img 
                     src={'/pieces/' + getPieceFilename(piece,pieceColor) + '.svg'}  
                     className="absolute w-full h-full opacity-50"
+                />
+            }
+            {promotionMenuOpen && 
+                <div className="absolute h-full w-full bg-neutral-900 opacity-50" />
+            }
+            {(promotionMenuOpen && square === promotionContext.to) && 
+                <PromotionMenu 
+                    onTop={rank===7}
+                    pieceColor={rank===7}
+                    onPromotionSelection={onPromotionSelection}
                 />
             }
             </div>

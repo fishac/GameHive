@@ -49,7 +49,11 @@ bool BoardState::moveRequiresPromotion(const Move& m) {
 }
 
 bool BoardState::moveRequiresPromotion(const ExtendedMove& m) {
-	return moveRequiresPromotion(m.from,m.to) && m.promotionPiece != NOPIECE;
+	return moveRequiresPromotion(m.from,m.to);
+}
+
+bool BoardState::moveRequiresPromotion(const ExtendedMoveIdx& m) {
+	return moveRequiresPromotion(Square::getSquare(m.fromIdx),Square::getSquare(m.toIdx));
 }
 
 bool BoardState::moveIsEnPassant(const Move& m) {

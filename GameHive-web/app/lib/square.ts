@@ -6,3 +6,11 @@ export type TSquare = -1|0|1|2|3|4|5|6|7
 |40|41|42|43|44|45|46|47
 |48|49|50|51|52|53|54|55
 |56|57|58|59|60|61|62|63;
+
+export function isValidTSquare(sq: TSquare): boolean {
+    return sq >= 0 && sq <= 63;
+}
+
+export function getSquare({rank, file}: {rank: number, file: number}): TSquare {
+    return rank*8+file as TSquare;
+}

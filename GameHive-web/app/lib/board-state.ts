@@ -12,6 +12,7 @@ export interface IBoardState {
     getLegalMovesFromSquare(sq: TSquare): TSquare[];
     makeMove(m: IMove): boolean;
     isMoveLegal(m: IMove): boolean;
+    moveRequiresPromotion(m: IMove): boolean;
     getCheckStatus(): boolean;
     getCheckmateStatus(): boolean;
     getStalemateStatus(): boolean;
@@ -69,6 +70,10 @@ export class BoardState implements IBoardState {
 
     isMoveLegal(m: IMove): boolean {
         return this.#internalState.isMoveLegal(m);
+    }
+
+    moveRequiresPromotion(m: IMove): boolean {
+        return this.#internalState.moveRequiresPromotion(m);
     }
 
     getCheckStatus(): boolean {

@@ -22,6 +22,7 @@ EMSCRIPTEN_BINDINGS(ChessEngineJS) {
 		.function("getLegalMovesFromSquare", &BoardState::getLegalMovesFromSquareIdx)
 		.function("makeMove", select_overload<bool(const ExtendedMoveIdx&)>(&BoardState::makeMove))
 		.function("isMoveLegal", select_overload<bool(const ExtendedMoveIdx&)>(&BoardState::isMoveLegal))
+		.function("moveRequiresPromotion", select_overload<bool(const ExtendedMoveIdx&)>(&BoardState::moveRequiresPromotion))
 		.function("getCheckStatus", &BoardState::getCheckStatus)
 		.function("getCheckmateStatus", &BoardState::getCheckmateStatus)
 		.function("getStalemateStatus", &BoardState::getStalemateStatus)
