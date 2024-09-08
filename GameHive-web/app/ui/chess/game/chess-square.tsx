@@ -30,16 +30,16 @@ function getPieceFilename(piece: TPiece, pieceColor: boolean): string {
     }
 }
 
-function getSquareStatus({sq, isOver, isDragging, isLegalToSquare, boardState}: {sq: TSquare, isOver: boolean, isDragging: boolean, isLegalToSquare: boolean, boardState: any}) {
+function getSquareStatus({sq, isOver, isDragging, isLegalToSquare, pieceColor, boardState}: {sq: TSquare, isOver: boolean, isDragging: boolean, isLegalToSquare: boolean, pieceColor: boolean, boardState: any}) {
     if (isDragging) {
         return 0;
     } else if (isOver && isLegalToSquare) {
         return 1;
     } else if (isLegalToSquare) {
         return 2;
-    } else if (boardState.getWhiteKingSquare() === sq) {
+    } else if (boardState.getPieceOnSquare(sq) === 6 && boardState.getCheckmateStatus() && boardState.getTurnColor() === pieceColor) {
         return 3;
-    } else if (boardState.getBlackKingSquare() === sq) {
+    } else if (boardState.getPieceOnSquare(sq) === 6 && boardState.getCheckStatus() && boardState.getTurnColor() === pieceColor) {
         return 4;
     } else {
         return 0;
@@ -62,7 +62,7 @@ export default function ChessSquare({square, rank, file, piece, pieceColor, isLe
         disabled: !isLegalToSquare
     });
     
-    const squareStatus: number = getSquareStatus({sq: square, isOver: droppable.isOver, isDragging: draggable.isDragging, isLegalToSquare, boardState});
+    const squareStatus: number = getSquareStatus({sq: square, isOver: droppable.isOver, isDragging: draggable.isDragging, isLegalToSquare, pieceColor, boardState});
 
     return (
         <div className={clsx(
@@ -78,8 +78,8 @@ export default function ChessSquare({square, rank, file, piece, pieceColor, isLe
                 { 
                     "bg-green-700 bg-opacity-80": (squareStatus == 1),
                     "bg-green-700 bg-opacity-40": (squareStatus == 2),
-                    "bg-red-400 bg-opacity-80": (squareStatus == 3),
-                    "bg-purple-400 bg-opacity-80": (squareStatus == 4)
+                    "bg-purple-400 bg-opacity-80": (squareStatus == 3),
+                    "bg-red-400 bg-opacity-80": (squareStatus == 4),
                 })}
             >
             {(piece>0 && promotionContext.from !== square) && 
