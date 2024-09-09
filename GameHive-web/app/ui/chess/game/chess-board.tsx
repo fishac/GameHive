@@ -6,7 +6,7 @@ import { useState } from "react";
 import { snapCenterToCursor } from "@dnd-kit/modifiers";
 import BoardState, { IBoardState } from "@/app/lib/board-state";
 import IMove from "@/app/lib/move";
-import { TSquare, isValidTSquare, getSquare } from "@/app/lib/square";
+import { TSquare, getSquare } from "@/app/lib/square";
 import {
   isValidPromotionContext,
   IPromotionContext,

@@ -3,6 +3,19 @@ import {TSquare} from '@/app/lib/square';
 import {TPiece} from '@/app/lib/piece';
 import IMove from '@/app/lib/move';
 
+export interface IChessEngine {
+    init(ceLib: any): void;
+    suggestMove(millisRemaining: number, millisIncrement: number): IMove;
+    provideMove(m: IMove): boolean;
+    setFEN(FEN: string): void;
+    getFEN(): string;
+    getMoveSearchDepth(): number;
+    getMoveSearchTime(): number;
+    getMoveSearchTimeLimit(): number;
+    searchWasHardTimeCutoff(): boolean;
+    getNumScannedNodes(): number;
+}
+
 class ChessEngine {
     #internalEngine: any;
     #ceLib: any;
@@ -18,11 +31,11 @@ class ChessEngine {
     }
 
 	provideMove(m: IMove): boolean {
-        return this.#internalEngine.provideMove();
+        return this.#internalEngine.provideMove(m);
     }
 
 	setFEN(FEN: string): void {
-        this.#internalEngine.setFEN();
+        this.#internalEngine.setFEN(FEN);
     }
 
 	getFEN(): string {
@@ -51,9 +64,9 @@ class ChessEngine {
 
 }
 
-export default async function initializeNewChessEngine() {
+export default async function initializeNewChessEngine(): Promise<IChessEngine> {
     const ceLib = await ChessEngineJS();
-    const ce = new ChessEngine();
+    const ce: IChessEngine = new ChessEngine();
     ce.init(ceLib);
     return ce;
 }

@@ -121,20 +121,9 @@ export class BoardState implements IBoardState {
     }
 }
 
-export default function initializeNewBoardState(): Promise<BoardState> {
-    /*
+export default async function initializeNewBoardState(): Promise<IBoardState> {
     const ceLib = await ChessEngineJS();
-    const bs = new BoardState();
+    const bs: IBoardState = new BoardState();
     bs.init(ceLib);
     return bs;
-    */
-   console.log("returning promise");
-   return ChessEngineJS().then(ceLib => {
-        console.log("initialized celib, creating board state");
-        const bs = new BoardState();
-        console.log("created board state, initializing it");
-        bs.init(ceLib);
-        console.log("initialized board state, returning it");
-        return bs;
-   })
 }
