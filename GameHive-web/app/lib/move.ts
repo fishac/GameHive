@@ -6,3 +6,7 @@ export default interface IMove {
     to: TSquare;
     promotionPiece: TPiece;
 }
+
+export function isValidMove(move: IMove | null) {
+    return (move && move.from !== -1 && move.to !== -1);
+}

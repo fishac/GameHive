@@ -24,6 +24,7 @@ class ChessEngine {
     init(ceLib: any): void {
         this.#ceLib = ceLib;
         this.#internalEngine = new this.#ceLib.ChessEngine();
+        this.#internalEngine.setFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     }
 
 	suggestMove(millisRemaining: number, millisIncrement: number): IMove {

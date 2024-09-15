@@ -29,7 +29,8 @@ function handleDragEnd(
   e: any,
   boardState: IBoardState,
   setDraggingFromSquare: any,
-  setPromotionContext: any
+  setPromotionContext: any,
+  onMove: any
 ): void {
   if (e.over) {
     const move: IMove = { from: e.active.id, to: e.over.id, promotionPiece: 0 };
@@ -38,7 +39,11 @@ function handleDragEnd(
       setPromotionContext({ from: move.from, to: move.to });
       setDraggingFromSquare(-1);
     } else {
-      boardState.makeMove(move);
+      //boardState.makeMove(move);
+      console.log("normal make move from player: " + JSON.stringify(move));
+      console.log("onMove");
+      onMove(move);
+      console.log("setDraggingFrom");
       setDraggingFromSquare(-1);
     }
   }
@@ -48,22 +53,28 @@ function handlePromotionSelection(
   promotionPiece: TPiece,
   promotionContext: IPromotionContext,
   boardState: IBoardState,
-  setPromotionContext: any
+  setPromotionContext: any,
+  onMove: any
 ): void {
   if (isValidPromotionContext(promotionContext, boardState)) {
-    boardState.makeMove({
+    //boardState.makeMove
+    setPromotionContext({ from: -1, to: -1 });
+    onMove({
       from: promotionContext.from,
       to: promotionContext.to,
       promotionPiece,
     });
-    setPromotionContext({ from: -1, to: -1 });
   }
 }
 
 export default function ChessBoard({
   boardState,
+  humanPlayerColor,
+  onMove
 }: {
-  boardState: IBoardState;
+  boardState: IBoardState,
+  humanPlayerColor: boolean,
+  onMove: (m: IMove) => void
 }) {
   const [draggingFromSquare, setDraggingFromSquare] = useState(-1 as TSquare);
   const [promotionContext, setPromotionContext] = useState({
@@ -78,7 +89,7 @@ export default function ChessBoard({
     <DndContext
       onDragStart={(e) => handleDragStart(e, boardState, setDraggingFromSquare)}
       onDragEnd={(e) =>
-        handleDragEnd(e, boardState, setDraggingFromSquare, setPromotionContext)
+        handleDragEnd(e, boardState, setDraggingFromSquare, setPromotionContext, onMove)
       }
       modifiers={[snapCenterToCursor]}
     >
@@ -95,7 +106,7 @@ export default function ChessBoard({
                   file={file}
                   piece={boardState.getPieceOnSquare(sq)}
                   pieceColor={boardState.getColorOnSquare(sq)}
-                  isLegalFromSquare={boardState.isLegalFromSquare(sq)}
+                  isLegalFromSquare={boardState.isLegalFromSquare(sq) && boardState.getColorOnSquare(sq) === humanPlayerColor && boardState.getTurnColor() === boardState.getColorOnSquare(sq)}
                   isLegalToSquare={legalDroppingSquares.includes(sq)}
                   boardState={boardState}
                   promotionContext={promotionContext}
@@ -104,7 +115,8 @@ export default function ChessBoard({
                       promotionPiece,
                       promotionContext,
                       boardState,
-                      setPromotionContext
+                      setPromotionContext,
+                      onMove
                     )
                   }
                 />

@@ -152,7 +152,7 @@ ExtendedMove ChessEngine::search(int millisRemaining, int millisIncrement, bool 
 			
 			if (shouldHardTimeCutoff()) {
 				hardTimeCutoff = true;
-				unmakeMove(0);
+				//unmakeMove(0);
 				break;
 			}
 			// Set possible alpha improvement
