@@ -1,7 +1,7 @@
 "use client";
 
 import ChessSquare from "@/app/ui/chess/game/chess-square";
-import { DndContext } from "@dnd-kit/core";
+import { DndContext, pointerWithin } from "@dnd-kit/core";
 import { useState } from "react";
 import { snapCenterToCursor } from "@dnd-kit/modifiers";
 import BoardState, { IBoardState } from "@/app/lib/board-state";
@@ -70,11 +70,11 @@ function handlePromotionSelection(
 export default function ChessBoard({
   boardState,
   humanPlayerColor,
-  onMove
+  onMove,
 }: {
-  boardState: IBoardState,
-  humanPlayerColor: boolean,
-  onMove: (m: IMove) => void
+  boardState: IBoardState;
+  humanPlayerColor: boolean;
+  onMove: (m: IMove) => void;
 }) {
   const [draggingFromSquare, setDraggingFromSquare] = useState(-1 as TSquare);
   const [promotionContext, setPromotionContext] = useState({
@@ -89,9 +89,16 @@ export default function ChessBoard({
     <DndContext
       onDragStart={(e) => handleDragStart(e, boardState, setDraggingFromSquare)}
       onDragEnd={(e) =>
-        handleDragEnd(e, boardState, setDraggingFromSquare, setPromotionContext, onMove)
+        handleDragEnd(
+          e,
+          boardState,
+          setDraggingFromSquare,
+          setPromotionContext,
+          onMove
+        )
       }
       modifiers={[snapCenterToCursor]}
+      collisionDetection={pointerWithin}
     >
       <div className="bg-red-500 w-[36%] aspect-square grid">
         {ranks.toReversed().map((rank) => (
@@ -106,7 +113,12 @@ export default function ChessBoard({
                   file={file}
                   piece={boardState.getPieceOnSquare(sq)}
                   pieceColor={boardState.getColorOnSquare(sq)}
-                  isLegalFromSquare={boardState.isLegalFromSquare(sq) && boardState.getColorOnSquare(sq) === humanPlayerColor && boardState.getTurnColor() === boardState.getColorOnSquare(sq)}
+                  isLegalFromSquare={
+                    boardState.isLegalFromSquare(sq) &&
+                    boardState.getColorOnSquare(sq) === humanPlayerColor &&
+                    boardState.getTurnColor() ===
+                      boardState.getColorOnSquare(sq)
+                  }
                   isLegalToSquare={legalDroppingSquares.includes(sq)}
                   boardState={boardState}
                   promotionContext={promotionContext}
