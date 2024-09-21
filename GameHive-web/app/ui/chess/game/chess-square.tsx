@@ -38,6 +38,7 @@ function getSquareStatus({
   isOver,
   isDragging,
   isLegalToSquare,
+  wasInLastMove,
   pieceColor,
   boardState,
 }: {
@@ -45,6 +46,7 @@ function getSquareStatus({
   isOver: boolean;
   isDragging: boolean;
   isLegalToSquare: boolean;
+  wasInLastMove: boolean;
   pieceColor: boolean;
   boardState: any;
 }) {
@@ -66,6 +68,8 @@ function getSquareStatus({
     boardState.getTurnColor() === pieceColor
   ) {
     return 4;
+  } else if (wasInLastMove) {
+    return 5;
   } else {
     return 0;
   }
@@ -79,6 +83,7 @@ export default function ChessSquare({
   pieceColor,
   isLegalFromSquare,
   isLegalToSquare,
+  wasInLastMove,
   boardState,
   promotionContext,
   onPromotionSelection,
@@ -90,6 +95,7 @@ export default function ChessSquare({
   pieceColor: boolean;
   isLegalFromSquare: boolean;
   isLegalToSquare: boolean;
+  wasInLastMove: boolean;
   boardState: IBoardState;
   promotionContext: IPromotionContext;
   onPromotionSelection: any;
@@ -123,6 +129,7 @@ export default function ChessSquare({
     isOver: droppable.isOver,
     isDragging: draggable.isDragging,
     isLegalToSquare,
+    wasInLastMove,
     pieceColor,
     boardState,
   });
@@ -141,6 +148,7 @@ export default function ChessSquare({
           "bg-green-700 bg-opacity-40": squareStatus == 2,
           "bg-purple-400 bg-opacity-80": squareStatus == 3,
           "bg-red-400 bg-opacity-80": squareStatus == 4,
+          "bg-yellow-500 bg-opacity-30": squareStatus == 5,
         })}
       >
         {piece > 0 && promotionContext.from !== square && (

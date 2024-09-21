@@ -1,4 +1,7 @@
 import { useState, useEffect } from "react";
+import { Red_Hat_Mono } from "next/font/google";
+
+const rhm = Red_Hat_Mono({ subsets: ["latin"] });
 
 interface ITimeBreakdown {
   minutes: number;
@@ -40,34 +43,76 @@ function formatDisplayMilli(n: number): string {
 export default function Timer({
   baseTimeMillis,
   incrementMillis,
+  ticking,
+  timerActive,
+  player,
+  onTimeout,
 }: {
   baseTimeMillis: number;
   incrementMillis: number;
+  ticking: boolean;
+  timerActive: boolean;
+  player: String;
+  onTimeout: () => void;
 }) {
+  const [hasStarted, setHasStarted] = useState<boolean>(false);
   const [remainingMillis, setRemainingMillis] =
     useState<number>(baseTimeMillis);
   const [turnMillis, setTurnMillis] = useState<number>(0);
   const [baseDateTime, setBaseDateTime] = useState<number>(Date.now());
-
   function updateRemainingTime(int: number): void {
     setRemainingMillis(remainingMillis - int);
   }
 
   useEffect(() => {
-    const int = 100;
-    const interval = setInterval(() => setTurnMillis(turnMillis + int), int);
+    console.log(`${player} timer useEffect. ticking: ${ticking}`);
+    const int = 50;
+    let interval: NodeJS.Timeout;
+    if (ticking) {
+      console.log(`${player} timer useEffect. setting interval.`);
+      setBaseDateTime(Date.now());
+      setHasStarted(true);
+      setInterval(() => {
+        setTurnMillis((t) => t + int);
+      }, int);
+    } else {
+      const rem = setRemainingMillis(
+        Math.max(
+          hasStarted
+            ? remainingMillis - (Date.now() - baseDateTime)
+            : remainingMillis,
+          0
+        )
+      );
+      setTurnMillis(0);
+    }
 
-    return () => clearInterval(interval);
-  });
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [ticking]);
 
-  const timeBreakdown: ITimeBreakdown = getTimeBreakdown(
-    remainingMillis - (Date.now() - baseDateTime)
+  const time: number = Math.max(
+    ticking ? remainingMillis - (Date.now() - baseDateTime) : remainingMillis,
+    0
   );
+  if (time <= 0 && timerActive) {
+    console.log(`${player} timeout!`);
+    onTimeout();
+  }
+  const timeBreakdown: ITimeBreakdown = getTimeBreakdown(time);
   return (
-    <div className="h-8 text-xl">
-      {`${formatDisplayMinSec(timeBreakdown.minutes)}:${formatDisplayMinSec(
-        timeBreakdown.seconds
-      )}.${formatDisplayMilli(timeBreakdown.milliseconds)}`}
+    <div className={`${rhm.className} text-neutral-100`}>
+      <span className="text-4xl">
+        {`${formatDisplayMinSec(timeBreakdown.minutes)}:${formatDisplayMinSec(
+          timeBreakdown.seconds
+        )}`}
+      </span>
+      <span className="text-md">
+        {`.${formatDisplayMilli(timeBreakdown.milliseconds)}`}
+      </span>
     </div>
   );
 }

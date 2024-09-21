@@ -20,6 +20,7 @@ namespace Square {
 	int getRank(const int& s);
 	int getFile(const int& s);
 	std::string getString(const Square_t& s);
+	std::string getString(const int& idx);
 	Color_t getShade(const Square_t& s);
 	Square_t aRookStartingSquare(const Color_t& c);
 	Square_t hRookStartingSquare(const Color_t& c);

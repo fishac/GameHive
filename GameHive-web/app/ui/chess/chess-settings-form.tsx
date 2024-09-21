@@ -38,7 +38,8 @@ const timeControlOptions: DropdownOption[] = [
 ];
 
 export default function ChessSettingsForm() {
-  const [selectedTimeControl, setSelectedTimeControl] = useState(null);
+  const [selectedTimeControl, setSelectedTimeControl] =
+    useState<DropdownOption | null>(null);
   const router = useRouter();
   const playAsWhite = () => {
     if (selectedTimeControl) {

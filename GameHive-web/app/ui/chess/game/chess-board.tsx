@@ -70,10 +70,12 @@ function handlePromotionSelection(
 export default function ChessBoard({
   boardState,
   humanPlayerColor,
+  lastMove,
   onMove,
 }: {
   boardState: IBoardState;
   humanPlayerColor: boolean;
+  lastMove: IMove;
   onMove: (m: IMove) => void;
 }) {
   const [draggingFromSquare, setDraggingFromSquare] = useState(-1 as TSquare);
@@ -120,6 +122,7 @@ export default function ChessBoard({
                       boardState.getColorOnSquare(sq)
                   }
                   isLegalToSquare={legalDroppingSquares.includes(sq)}
+                  wasInLastMove={lastMove.from === sq || lastMove.to === sq}
                   boardState={boardState}
                   promotionContext={promotionContext}
                   onPromotionSelection={(promotionPiece: TPiece) =>

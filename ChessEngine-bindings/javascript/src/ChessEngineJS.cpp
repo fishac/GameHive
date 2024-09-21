@@ -11,6 +11,7 @@ EMSCRIPTEN_BINDINGS(ChessEngineJS) {
 		.field("to",&ExtendedMoveIdx::toIdx)
 		.field("promotionPiece",&ExtendedMoveIdx::promotionPiece);
 	function("getMoveString",select_overload<std::string(ExtendedMoveIdx&)>(&MoveUtils::getString));
+	function("getSquareString",select_overload<std::string(const int&)>(&Square::getString));
 	register_vector<ExtendedMoveIdx>("VectorMove");
 	register_vector<int>("VectorSquare");
 	class_<BoardState>("BoardState")

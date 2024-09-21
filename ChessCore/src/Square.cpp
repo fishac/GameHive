@@ -200,6 +200,10 @@ namespace Square {
 		}
 	}
 	
+	std::string getString(const int& idx) {
+		return getString(getSquare(idx));
+	}
+	
 	Color_t getShade(const Square_t& s) {
 		int idx = getIndex(s);
 		return (getRank(idx)%2) != (getFile(idx)%2);
