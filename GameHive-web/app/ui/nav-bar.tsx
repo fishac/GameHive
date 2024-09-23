@@ -6,7 +6,7 @@ import clsx from "clsx";
 const links = [
   { name: "Home", href: "/" },
   { name: "Play", href: "/play" },
-  { name: "Leaderboards", href: "/leaderboards" },
+  // { name: "Leaderboards", href: "/leaderboards" },
 ];
 
 export default function NavBar() {

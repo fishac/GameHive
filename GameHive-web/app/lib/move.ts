@@ -16,3 +16,10 @@ export const NOMOVE: IMove = {
     to: -1,
     promotionPiece: 0
 }
+
+
+export interface IMoveRecord {
+    move: IMove;
+    movedPiece: TPiece;
+    moveIsCapture: boolean;
+}

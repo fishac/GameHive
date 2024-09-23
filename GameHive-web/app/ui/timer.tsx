@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Red_Hat_Mono } from "next/font/google";
+import { ITimeControl } from "../lib/time-control";
 
 const rhm = Red_Hat_Mono({ subsets: ["latin"] });
 
@@ -41,49 +42,47 @@ function formatDisplayMilli(n: number): string {
 }
 
 export default function Timer({
-  baseTimeMillis,
-  incrementMillis,
   ticking,
   timerActive,
   player,
+  timeControl,
   onTimeout,
 }: {
-  baseTimeMillis: number;
-  incrementMillis: number;
   ticking: boolean;
   timerActive: boolean;
   player: String;
+  timeControl: ITimeControl;
   onTimeout: () => void;
 }) {
   const [hasStarted, setHasStarted] = useState<boolean>(false);
   const [remainingMillis, setRemainingMillis] =
-    useState<number>(baseTimeMillis);
+    useState<number>(timeControl.baseMillis);
   const [turnMillis, setTurnMillis] = useState<number>(0);
   const [baseDateTime, setBaseDateTime] = useState<number>(Date.now());
-  function updateRemainingTime(int: number): void {
-    setRemainingMillis(remainingMillis - int);
-  }
 
   useEffect(() => {
-    console.log(`${player} timer useEffect. ticking: ${ticking}`);
     const int = 50;
     let interval: NodeJS.Timeout;
     if (ticking) {
-      console.log(`${player} timer useEffect. setting interval.`);
-      setBaseDateTime(Date.now());
-      setHasStarted(true);
-      setInterval(() => {
+      const bdt = Date.now();
+      setBaseDateTime(bdt);
+      setHasStarted(hs => true);
+      interval = setInterval(() => {
         setTurnMillis((t) => t + int);
+        if (remainingMillis - (Date.now() - bdt) <= 0) {
+          onTimeout();
+          setRemainingMillis(0);
+        }
       }, int);
     } else {
-      const rem = setRemainingMillis(
-        Math.max(
-          hasStarted
-            ? remainingMillis - (Date.now() - baseDateTime)
-            : remainingMillis,
-          0
-        )
+      const rem = Math.max(
+        hasStarted
+          ? remainingMillis - (Date.now() - baseDateTime)
+          : remainingMillis,
+        0
       );
+      const incr = hasStarted && timerActive && rem > 0 ? timeControl.incrementMillis : 0;
+      setRemainingMillis(rem+incr);
       setTurnMillis(0);
     }
 
@@ -98,10 +97,6 @@ export default function Timer({
     ticking ? remainingMillis - (Date.now() - baseDateTime) : remainingMillis,
     0
   );
-  if (time <= 0 && timerActive) {
-    console.log(`${player} timeout!`);
-    onTimeout();
-  }
   const timeBreakdown: ITimeBreakdown = getTimeBreakdown(time);
   return (
     <div className={`${rhm.className} text-neutral-100`}>
@@ -111,7 +106,7 @@ export default function Timer({
         )}`}
       </span>
       <span className="text-md">
-        {`.${formatDisplayMilli(timeBreakdown.milliseconds)}`}
+        {time < 60000 && `.${formatDisplayMilli(timeBreakdown.milliseconds)}`}
       </span>
     </div>
   );

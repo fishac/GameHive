@@ -24,6 +24,7 @@ export interface IBoardState {
     getPieceOnSquare(sq: TSquare): TPiece;
     getColorOnSquare(sq: TSquare): boolean;
     isSquareOccupied(sq: TSquare): boolean;
+    moveIsCapture(move: IMove): boolean;
 }
 
 export class BoardState implements IBoardState {
@@ -118,6 +119,10 @@ export class BoardState implements IBoardState {
 
     isSquareOccupied(sq: TSquare): boolean {
         return this.#internalState.isSquareOccupied(sq);
+    }
+
+    moveIsCapture(move: IMove): boolean {
+        return this.#internalState.moveIsCapture(move);
     }
 }
 

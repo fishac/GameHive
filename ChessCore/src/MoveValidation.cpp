@@ -92,6 +92,10 @@ bool BoardState::moveIsCapture(const ExtendedMove& m) {
 	return moveIsCapture(m.from, m.to);
 }
 
+bool BoardState::moveIsCapture(const ExtendedMoveIdx& m) {
+	return moveIsCapture(Square::getSquare(m.fromIdx), Square::getSquare(m.toIdx));
+}
+
 bool BoardState::moveIsCastle(const Square_t& from, const Square_t& to) {
 	return getPiece(from, turnColor) == KING 
 	&& (

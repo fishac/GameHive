@@ -1,3 +1,4 @@
+import { ITimeControl } from "@/app/lib/time-control";
 import Timer from "@/app/ui/timer";
 import Image from "next/image";
 
@@ -5,11 +6,13 @@ export default function ChessPlayerInfo({
   isEngine,
   playerTurn,
   timerActive,
+  timeControl,
   onTimeout,
 }: {
   isEngine: boolean;
   playerTurn: boolean;
   timerActive: boolean;
+  timeControl: ITimeControl;
   onTimeout: () => void;
 }) {
   return (
@@ -19,11 +22,10 @@ export default function ChessPlayerInfo({
       </span>
       <div className="flex flex-row justify-between my-4 mx-2">
         <Timer
-          baseTimeMillis={10000}
-          incrementMillis={0}
           ticking={playerTurn}
           timerActive={timerActive}
           player={isEngine ? "Honeybee" : "Player"}
+          timeControl={timeControl}
           onTimeout={onTimeout}
         />
         {isEngine && playerTurn && (
@@ -33,6 +35,7 @@ export default function ChessPlayerInfo({
             width={36}
             height={36}
             className="mr-2"
+            unoptimized={true}
           />
         )}
       </div>

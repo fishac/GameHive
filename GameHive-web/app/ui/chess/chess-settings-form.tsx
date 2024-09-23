@@ -3,39 +3,7 @@
 import { useState } from "react";
 import Dropdown, { DropdownOption } from "@/app/ui/dropdown";
 import { useRouter } from "next/navigation";
-
-const timeControlOptions: DropdownOption[] = [
-  {
-    id: "bullet",
-    value: 0,
-    label: "1 minute base | 0 second increment",
-  },
-  {
-    id: "blitz",
-    value: 1,
-    label: "5 minute base | 0 second increment",
-  },
-  {
-    id: "blitz-incr",
-    value: 2,
-    label: "5 minute base | 3 second increment",
-  },
-  {
-    id: "rapid",
-    value: 3,
-    label: "10 minute base | 0 second increment",
-  },
-  {
-    id: "rapid-incr",
-    value: 4,
-    label: "10 minute base | 5 second increment",
-  },
-  {
-    id: "nolimit",
-    value: -1,
-    label: "Unlimited Time",
-  },
-];
+import { timeControlOptions } from "@/app/lib/time-control";
 
 export default function ChessSettingsForm() {
   const [selectedTimeControl, setSelectedTimeControl] =

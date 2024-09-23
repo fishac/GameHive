@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { useDraggable, useDroppable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
-import { TPiece } from "@/app/lib/piece";
+import { getPieceFilename, TPiece } from "@/app/lib/piece";
 import { TSquare } from "@/app/lib/square";
 import { IBoardState } from "@/app/lib/board-state";
 import PromotionMenu from "./promotion-menu";
@@ -10,70 +10,7 @@ import {
   isValidPromotionContext,
 } from "@/app/lib/promotions";
 
-function getPieceFilename(piece: TPiece, pieceColor: boolean): string {
-  if (piece > 0) {
-    const colorString = pieceColor ? "w" : "b";
-    let pieceString;
-    if (piece == 1) {
-      pieceString = "P";
-    } else if (piece == 2) {
-      pieceString = "N";
-    } else if (piece == 3) {
-      pieceString = "B";
-    } else if (piece == 4) {
-      pieceString = "R";
-    } else if (piece == 5) {
-      pieceString = "Q";
-    } else {
-      pieceString = "K";
-    }
-    return colorString + pieceString;
-  } else {
-    return "";
-  }
-}
 
-function getSquareStatus({
-  sq,
-  isOver,
-  isDragging,
-  isLegalToSquare,
-  wasInLastMove,
-  pieceColor,
-  boardState,
-}: {
-  sq: TSquare;
-  isOver: boolean;
-  isDragging: boolean;
-  isLegalToSquare: boolean;
-  wasInLastMove: boolean;
-  pieceColor: boolean;
-  boardState: any;
-}) {
-  if (isDragging) {
-    return 0;
-  } else if (isOver && isLegalToSquare) {
-    return 1;
-  } else if (isLegalToSquare) {
-    return 2;
-  } else if (
-    boardState.getPieceOnSquare(sq) === 6 &&
-    boardState.getCheckmateStatus() &&
-    boardState.getTurnColor() === pieceColor
-  ) {
-    return 3;
-  } else if (
-    boardState.getPieceOnSquare(sq) === 6 &&
-    boardState.getCheckStatus() &&
-    boardState.getTurnColor() === pieceColor
-  ) {
-    return 4;
-  } else if (wasInLastMove) {
-    return 5;
-  } else {
-    return 0;
-  }
-}
 
 export default function ChessSquare({
   square,
@@ -86,6 +23,7 @@ export default function ChessSquare({
   wasInLastMove,
   boardState,
   promotionContext,
+  gameOngoing,
   onPromotionSelection,
 }: {
   square: TSquare;
@@ -98,8 +36,11 @@ export default function ChessSquare({
   wasInLastMove: boolean;
   boardState: IBoardState;
   promotionContext: IPromotionContext;
+  gameOngoing: boolean;
   onPromotionSelection: any;
 }) {
+
+
   const promotionMenuOpen: boolean = isValidPromotionContext(
     promotionContext,
     boardState
@@ -112,7 +53,7 @@ export default function ChessSquare({
     isDragging: any;
   } = useDraggable({
     id: square,
-    disabled: !isLegalFromSquare || promotionMenuOpen,
+    disabled: !isLegalFromSquare || promotionMenuOpen || !gameOngoing,
   });
   const draggableStyle = {
     // Outputs `translate3d(x, y, 0)`
@@ -124,15 +65,33 @@ export default function ChessSquare({
     disabled: !isLegalToSquare,
   });
 
-  const squareStatus: number = getSquareStatus({
-    sq: square,
-    isOver: droppable.isOver,
-    isDragging: draggable.isDragging,
-    isLegalToSquare,
-    wasInLastMove,
-    pieceColor,
-    boardState,
-  });
+  function getSquareStatus() {
+    if (draggable.isDragging) {
+      return 0;
+    } else if (droppable.isOver && isLegalToSquare) {
+      return 1;
+    } else if (isLegalToSquare) {
+      return 2;
+    } else if (
+      boardState.getPieceOnSquare(square) === 6 &&
+      boardState.getCheckmateStatus() &&
+      boardState.getTurnColor() === pieceColor
+    ) {
+      return 3;
+    } else if (
+      boardState.getPieceOnSquare(square) === 6 &&
+      boardState.getCheckStatus() &&
+      boardState.getTurnColor() === pieceColor
+    ) {
+      return 4;
+    } else if (wasInLastMove) {
+      return 5;
+    } else {
+      return 0;
+    }
+  }
+
+  const squareStatus: number = getSquareStatus();
 
   return (
     <div

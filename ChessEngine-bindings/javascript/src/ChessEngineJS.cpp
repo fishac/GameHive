@@ -35,6 +35,7 @@ EMSCRIPTEN_BINDINGS(ChessEngineJS) {
 		.function("getPieceOnSquare", &BoardState::getPieceOnSquareIdx)
 		.function("getColorOnSquare", &BoardState::getColorOnSquareIdx)
 		.function("isSquareOccupied", &BoardState::isSquareIdxOccupied)
+		.function("moveIsCapture", select_overload<bool(const ExtendedMoveIdx&)>(&BoardState::moveIsCapture))
 		;
 	class_<ChessEngine>("ChessEngine")
 		.constructor<>()

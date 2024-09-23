@@ -17,25 +17,25 @@ export default function PromotionMenu({
       })}
     >
       <Image
-        className="w-full aspect-square bg-neutral-400 hover:bg-neutral-200"
+        className="w-full h-full aspect-square bg-neutral-400 hover:bg-neutral-200"
         src={pieceColor ? "/pieces/wQ.svg" : "/pieces/bQ.svg"}
         onClick={() => onPromotionSelection(5)}
         alt="Promote to queen"
       />
       <Image
-        className="w-full aspect-square bg-neutral-400 hover:bg-neutral-200"
+        className="w-full h-full aspect-square bg-neutral-400 hover:bg-neutral-200"
         src={pieceColor ? "/pieces/wR.svg" : "/pieces/bR.svg"}
         onClick={() => onPromotionSelection(4)}
         alt="Promote to rook"
       />
       <Image
-        className="w-full aspect-square bg-neutral-400 hover:bg-neutral-200"
+        className="w-full h-full aspect-square bg-neutral-400 hover:bg-neutral-200"
         src={pieceColor ? "/pieces/wB.svg" : "/pieces/bB.svg"}
         onClick={() => onPromotionSelection(3)}
         alt="Promote to bishop"
       />
       <Image
-        className="w-full aspect-square bg-neutral-400 hover:bg-neutral-200"
+        className="w-full h-full aspect-square bg-neutral-400 hover:bg-neutral-200"
         src={pieceColor ? "/pieces/wN.svg" : "/pieces/bN.svg"}
         onClick={() => onPromotionSelection(2)}
         alt="Promote to knight"

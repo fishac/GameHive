@@ -1,6 +1,6 @@
 "use client";
 
-import IMove, { NOMOVE } from "@/app/lib/move";
+import IMove, { NOMOVE, IMoveRecord } from "@/app/lib/move";
 import EmptyChessBoard from "./empty-chess-board";
 import ChessBoard from "@/app/ui/chess/game/chess-board";
 import ChessSidebar from "@/app/ui/chess/game/chess-sidebar";
@@ -20,6 +20,7 @@ import {
 import { TGameResult, GameResult } from "@/app/lib/game-result";
 import { TPiece } from "@/app/lib/piece";
 import initializeNewChessUtils, { IChessUtils } from "@/app/lib/chess-utils";
+import { ITimeControl, getTimeControl } from "@/app/lib/time-control";
 
 interface IGameContext {
   ply: number;
@@ -28,12 +29,6 @@ interface IGameContext {
   player1Turn: boolean;
   player2Turn: boolean;
   result: TGameResult;
-}
-
-interface MoveRecord {
-  move: IMove;
-  movedPiece: TPiece;
-  moveWasCapture: boolean;
 }
 
 export default function ChessPage() {
@@ -50,10 +45,22 @@ export default function ChessPage() {
     player2Turn: false,
     result: GameResult.UNDECIDED,
   });
-  const [lastMove, setLastMove] = useState<IMove>(NOMOVE);
-  const [moveHistory, setMoveHistory] = useState<IMove[]>([]);
+  const [moveHistory, setMoveHistory] = useState<IMoveRecord[]>([]);
   const searchParams = useSearchParams();
   const humanPlayerColor = searchParams.get("white") === "1";
+  const initialTimeSettings: ITimeControl = getTimeControl(Number.parseInt(searchParams.get("timeControl") || '-1'));
+
+  function getGameResult() {
+    if (boardState?.getCheckmateStatus() && boardState.getTurnColor()) {
+      return GameResult.BLACK_WIN;
+    } else if (boardState?.getCheckmateStatus() && !boardState?.getTurnColor()) {
+      return GameResult.WHITE_WIN;
+    } else if (boardState?.getStalemateStatus()) {
+      return GameResult.DRAW;
+    } else {
+      return gameContext.result;
+    }
+  }
 
   function handleChessEngineWorkerResponse(e: MessageEvent): void {
     const response = e.data;
@@ -82,7 +89,15 @@ export default function ChessPage() {
     } else if (
       response.responseType === CHESS_ENGINE_WORKER_MESSAGE_TYPES.ENGINE_MOVE
     ) {
-      if (boardState) {
+      if (boardState && gameContext.result === GameResult.UNDECIDED) {
+        setMoveHistory((hist) => {
+          hist.push({
+            move: response.move,
+            movedPiece: boardState.getPieceOnSquare(response.move.from),
+            moveIsCapture: boardState.moveIsCapture(response.move),
+          });
+          return hist;
+        });
         boardState.makeMove(response.move);
         setGameContext((gc) => {
           return {
@@ -91,12 +106,8 @@ export default function ChessPage() {
             waitingForEngine: false,
             player1Turn: !gc.player1Turn,
             player2Turn: !gc.player2Turn,
-            result: gc.result,
+            result: getGameResult(),
           };
-        });
-        setMoveHistory((hist) => {
-          hist.push(response.move);
-          return hist;
         });
       }
     }
@@ -113,6 +124,14 @@ export default function ChessPage() {
         requestType: CHESS_ENGINE_WORKER_MESSAGE_TYPES.ENGINE_MOVE,
         previousMove: move,
       });
+      setMoveHistory((hist) => {
+        hist.push({
+          move: move,
+          movedPiece: boardState.getPieceOnSquare(move.from),
+          moveIsCapture: boardState.moveIsCapture(move)
+        });
+        return hist;
+      });
       boardState.makeMove(move);
       setGameContext((gc) => {
         return {
@@ -121,12 +140,8 @@ export default function ChessPage() {
           waitingForEngine: true,
           player1Turn: !gc.player1Turn,
           player2Turn: !gc.player2Turn,
-          result: gc.result,
+          result: getGameResult(),
         };
-      });
-      setMoveHistory((hist) => {
-        hist.push(move);
-        return hist;
       });
     }
   }
@@ -185,10 +200,11 @@ export default function ChessPage() {
           humanPlayerColor={humanPlayerColor}
           lastMove={
             moveHistory.length > 0
-              ? moveHistory[moveHistory.length - 1]
+              ? moveHistory[moveHistory.length - 1].move
               : NOMOVE
           }
           onMove={(move: IMove) => handlePlayerMove(move)}
+          gameOngoing={gameContext.result===GameResult.UNDECIDED}
         />
       ) : (
         <EmptyChessBoard />
@@ -196,12 +212,16 @@ export default function ChessPage() {
       <ChessSidebar
         moveHistory={moveHistory}
         player1Turn={
-          !!boardState && gameContext.engineReady && gameContext.player1Turn
+          !!boardState && gameContext.engineReady && gameContext.player1Turn && gameContext.result === GameResult.UNDECIDED
         }
         player2Turn={
-          !!boardState && gameContext.engineReady && gameContext.player2Turn
+          !!boardState && gameContext.engineReady && gameContext.player2Turn && gameContext.result === GameResult.UNDECIDED
         }
         timersActive={gameContext.result === GameResult.UNDECIDED}
+        result={gameContext.result}
+        timeControl={initialTimeSettings}
+        player1IsEngine={!humanPlayerColor}
+        player2IsEngine={humanPlayerColor}
         chessUtils={chessUtils}
         onTimeout={handleTimeout}
       />

@@ -49,12 +49,20 @@ export default function Page() {
       </p>
       <HRule />
       <p>
-        &emsp;I created this website using React with Next.js and Typescript. 
+        &emsp;I created this website using React with Next.js, Typescript, and Tailwind. I created all of the components myself, with the exception of using a dropdown component from Headless UI. 
         The games and engines use custom JavaScript and Web Assembly modules to benefit from the speed of code originally written in C++.
-
       </p>
       <p>
-        &emsp;This website is hosted on AWS EC2
+        &emsp;I plan on increasing the functionality of this site over time. Some ideas I have are:
+        <ul>
+          <li>&emsp;&emsp;&#x2022; More games, as mentioned above.</li>
+          <li>&emsp;&emsp;&#x2022; An arcade-style leaderboard with most, or most recent, games where a player beat the engine.</li>
+          <li>&emsp;&emsp;&#x2022; Improved board interaction, including square-to-square arrow drawing, rewinding the view-state of the board, and flipping the board display vertically.</li>
+          <li>&emsp;&emsp;&#x2022; Expanding the site to include player-versus-player games.</li>
+        </ul>
+      </p>
+      <p>
+        &emsp;This website is hosted on Fly.io.
       </p>
     </div>
   );

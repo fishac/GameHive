@@ -17,65 +17,17 @@ import { IoSwapVerticalOutline } from "react-icons/io5";
 const ranks = [0, 1, 2, 3, 4, 5, 6, 7];
 const files = [0, 1, 2, 3, 4, 5, 6, 7];
 
-function handleDragStart(
-  e: any,
-  boardState: IBoardState,
-  setDraggingFromSquare: any
-): void {
-  setDraggingFromSquare(e.active.id);
-}
-
-function handleDragEnd(
-  e: any,
-  boardState: IBoardState,
-  setDraggingFromSquare: any,
-  setPromotionContext: any,
-  onMove: any
-): void {
-  if (e.over) {
-    const move: IMove = { from: e.active.id, to: e.over.id, promotionPiece: 0 };
-    console.log("handleDragEnd move: " + JSON.stringify(move));
-    if (boardState.moveRequiresPromotion(move)) {
-      setPromotionContext({ from: move.from, to: move.to });
-      setDraggingFromSquare(-1);
-    } else {
-      //boardState.makeMove(move);
-      console.log("normal make move from player: " + JSON.stringify(move));
-      console.log("onMove");
-      onMove(move);
-      console.log("setDraggingFrom");
-      setDraggingFromSquare(-1);
-    }
-  }
-}
-
-function handlePromotionSelection(
-  promotionPiece: TPiece,
-  promotionContext: IPromotionContext,
-  boardState: IBoardState,
-  setPromotionContext: any,
-  onMove: any
-): void {
-  if (isValidPromotionContext(promotionContext, boardState)) {
-    //boardState.makeMove
-    setPromotionContext({ from: -1, to: -1 });
-    onMove({
-      from: promotionContext.from,
-      to: promotionContext.to,
-      promotionPiece,
-    });
-  }
-}
-
 export default function ChessBoard({
   boardState,
   humanPlayerColor,
   lastMove,
+  gameOngoing,
   onMove,
 }: {
   boardState: IBoardState;
   humanPlayerColor: boolean;
   lastMove: IMove;
+  gameOngoing: boolean;
   onMove: (m: IMove) => void;
 }) {
   const [draggingFromSquare, setDraggingFromSquare] = useState(-1 as TSquare);
@@ -87,18 +39,45 @@ export default function ChessBoard({
     draggingFromSquare === -1
       ? []
       : boardState.getLegalMovesFromSquare(draggingFromSquare);
+
+  function handleDragStart(
+    e: any
+  ): void {
+    setDraggingFromSquare(e.active.id);
+  }
+
+  function handleDragEnd(
+    e: any
+  ): void {
+    if (e.over) {
+      const move: IMove = { from: e.active.id, to: e.over.id, promotionPiece: 0 };
+      if (boardState.moveRequiresPromotion(move)) {
+        setPromotionContext({ from: move.from, to: move.to });
+        setDraggingFromSquare(-1);
+      } else {
+        onMove(move);
+        setDraggingFromSquare(-1);
+      }
+    }
+  }
+
+  function handlePromotionSelection(
+    promotionPiece: TPiece
+  ): void {
+    if (isValidPromotionContext(promotionContext, boardState)) {
+      setPromotionContext({ from: -1, to: -1 });
+      onMove({
+        from: promotionContext.from,
+        to: promotionContext.to,
+        promotionPiece,
+      });
+    }
+  }
+
   return (
     <DndContext
-      onDragStart={(e) => handleDragStart(e, boardState, setDraggingFromSquare)}
-      onDragEnd={(e) =>
-        handleDragEnd(
-          e,
-          boardState,
-          setDraggingFromSquare,
-          setPromotionContext,
-          onMove
-        )
-      }
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
       modifiers={[snapCenterToCursor]}
       collisionDetection={pointerWithin}
     >
@@ -125,14 +104,8 @@ export default function ChessBoard({
                   wasInLastMove={lastMove.from === sq || lastMove.to === sq}
                   boardState={boardState}
                   promotionContext={promotionContext}
-                  onPromotionSelection={(promotionPiece: TPiece) =>
-                    handlePromotionSelection(
-                      promotionPiece,
-                      promotionContext,
-                      boardState,
-                      setPromotionContext,
-                      onMove
-                    )
+                  gameOngoing={gameOngoing}
+                  onPromotionSelection={handlePromotionSelection
                   }
                 />
               );

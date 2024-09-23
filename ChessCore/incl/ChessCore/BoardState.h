@@ -100,6 +100,7 @@ public:
 	bool moveIsCapture(const Square_t& from, const Square_t& to);
 	bool moveIsCapture(const Move& m);
 	bool moveIsCapture(const ExtendedMove& m);
+	bool moveIsCapture(const ExtendedMoveIdx& m);
 	bool moveIsCastle(const Square_t& from, const Square_t& to);
 	bool moveIsCastle(const Move& m);
 	bool moveIsCastle(const ExtendedMove& m);
