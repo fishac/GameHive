@@ -1,5 +1,3 @@
-#!/bin/ash
-
 mkdir -p build/lib
 mkdir build/src
 cd build

@@ -8,7 +8,7 @@ export default function Page() {
       </p>
       <HRule />
       <p>
-        &emsp;Welcome to my site! Here you'll find a range of board games with engines (computer opponents) to play against that I created from scratch.
+        &emsp;Welcome to my site! Here you&apos;ll find a range of board games with engines (computer opponents) to play against that I created from scratch.
         The engines run directly in your browser, no setup required! 
       </p>
       <p>
@@ -35,14 +35,14 @@ export default function Page() {
       </p>
       <HRule />
       <p>
-        &emsp;I incorporated many ideas in the Chess engine's best-move-computing algorithms including negamax search, alpha-beta pruning, iterative deepening, quiescence search, bitboards, static exchange evaluation, null move pruning, late move pruning, search extensions, move prioritization, and transposition tables. 
+        &emsp;I incorporated many ideas in the Chess engine&apos;s best-move-computing algorithms including negamax search, alpha-beta pruning, iterative deepening, quiescence search, bitboards, static exchange evaluation, null move pruning, late move pruning, search extensions, move prioritization, and transposition tables. 
       </p>
       <p>
         &emsp;I kept the evaluation function relatively simple, incorporating and considering piece weights, piece-square weight tables, piece mobility, king safety, isolated pawns, doubled pawns, passed pawns, early-endgame weight pairs, and king distance-to-edge.
       </p>
       <p>
-        &emsp;When looking ahead in its attempt to compute the best move, the engine scans through up to 900 thousand positions per second, depending on the search's initial board state.
-        This is a far cry from the top engines' 75-150 million positions per second but a number I am proud of achieving through many rounds of optimization!
+        &emsp;When looking ahead in its attempt to compute the best move, the engine scans through up to 900 thousand positions per second, depending on the search&apos;s initial board state.
+        This is a far cry from the top engines&apos; 75-150 million positions per second but a number I am proud of achieving through many rounds of optimization!
       </p>
       <p className="text-2xl font-bold mt-8">
         This Website
