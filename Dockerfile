@@ -1,6 +1,6 @@
 FROM node:18-alpine AS base 
 
-FROM base as node-build
+FROM base AS node-build
 
 RUN apk add --no-cache libc6-compat
 
@@ -9,12 +9,9 @@ WORKDIR /app/GameHive
 COPY ./GameHive-web ./
 RUN npm ci 
 RUN ls -la
-#COPY --from=cpp-build /app/ChessEngine-bindings-javascript/build/ChessEngineJS.js ./app/lib/
 RUN npm run build 
 
 FROM base AS production 
-
-#RUN apk add --no-cache libc6-compat
 
 ENV NODE_ENV=production
 
