@@ -24,8 +24,8 @@ export default function ChessPlayerInfo({
         <Timer
           ticking={playerTurn}
           timerActive={timerActive}
-          player={isEngine ? "Honeybee" : "Player"}
           timeControl={timeControl}
+          allowGrace={!isEngine}
           onTimeout={onTimeout}
         />
         {isEngine && playerTurn && (

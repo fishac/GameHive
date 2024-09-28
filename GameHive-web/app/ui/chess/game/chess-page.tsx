@@ -73,7 +73,7 @@ export default function ChessPage() {
           previousMove: NOMOVE,
         });
       }
-      setGameContext((gc) => {
+      setGameContext((gc: IGameContext) => {
         return {
           ply: gc.ply,
           engineReady: true,
@@ -90,16 +90,21 @@ export default function ChessPage() {
       response.responseType === CHESS_ENGINE_WORKER_MESSAGE_TYPES.ENGINE_MOVE
     ) {
       if (boardState && gameContext.result === GameResult.UNDECIDED) {
-        setMoveHistory((hist) => {
+        /*setMoveHistory((hist: IMoveRecord[]) => {
           hist.push({
             move: response.move,
             movedPiece: boardState.getPieceOnSquare(response.move.from),
             moveIsCapture: boardState.moveIsCapture(response.move),
           });
           return hist;
-        });
+        });*/
+        setMoveHistory([...moveHistory,{
+            move: response.move,
+            movedPiece: boardState.getPieceOnSquare(response.move.from),
+            moveIsCapture: boardState.moveIsCapture(response.move),
+          }]);
         boardState.makeMove(response.move);
-        setGameContext((gc) => {
+        setGameContext((gc: IGameContext) => {
           return {
             ply: gc.ply + 1,
             engineReady: gc.engineReady,
@@ -124,7 +129,7 @@ export default function ChessPage() {
         requestType: CHESS_ENGINE_WORKER_MESSAGE_TYPES.ENGINE_MOVE,
         previousMove: move,
       });
-      setMoveHistory((hist) => {
+      /*setMoveHistory((hist: IMoveRecord[]) => {
         hist.push({
           move: move,
           movedPiece: boardState.getPieceOnSquare(move.from),
@@ -132,8 +137,14 @@ export default function ChessPage() {
         });
         return hist;
       });
+      */
+      setMoveHistory([...moveHistory,{
+        move: move,
+        movedPiece: boardState.getPieceOnSquare(move.from),
+        moveIsCapture: boardState.moveIsCapture(move)
+      }]);
       boardState.makeMove(move);
-      setGameContext((gc) => {
+      setGameContext((gc: IGameContext) => {
         return {
           ply: gameContext.ply + 1,
           engineReady: gameContext.engineReady,
@@ -147,14 +158,14 @@ export default function ChessPage() {
   }
 
   function handleTimeout(player1: boolean) {
-    setGameContext((gc) => {
+    setGameContext((gc: IGameContext) => {
       return {
         ply: gc.ply,
         engineReady: gc.engineReady,
         waitingForEngine: false,
         player1Turn: false,
         player2Turn: false,
-        result: player1 ? GameResult.BLACK_WIN : GameResult.WHITE_WIN,
+        result: player1 ? (boardState?.blackHasSufficientCheckmatingMaterial() ? GameResult.BLACK_WIN : GameResult.DRAW) : (boardState?.whiteHasSufficientCheckmatingMaterial() ? GameResult.WHITE_WIN : GameResult.DRAW)
       };
     });
   }

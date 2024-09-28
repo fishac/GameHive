@@ -36,6 +36,8 @@ EMSCRIPTEN_BINDINGS(ChessEngineJS) {
 		.function("getColorOnSquare", &BoardState::getColorOnSquareIdx)
 		.function("isSquareOccupied", &BoardState::isSquareIdxOccupied)
 		.function("moveIsCapture", select_overload<bool(const ExtendedMoveIdx&)>(&BoardState::moveIsCapture))
+		.function("whiteHasSufficientCheckmatingMaterial", &BoardState::whiteHasSufficientCheckmatingMaterial)
+		.function("blackHasSufficientCheckmatingMaterial", &BoardState::blackHasSufficientCheckmatingMaterial)
 		;
 	class_<ChessEngine>("ChessEngine")
 		.constructor<>()

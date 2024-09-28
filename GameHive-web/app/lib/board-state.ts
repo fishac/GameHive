@@ -25,6 +25,8 @@ export interface IBoardState {
     getColorOnSquare(sq: TSquare): boolean;
     isSquareOccupied(sq: TSquare): boolean;
     moveIsCapture(move: IMove): boolean;
+    whiteHasSufficientCheckmatingMaterial(): boolean;
+    blackHasSufficientCheckmatingMaterial(): boolean;
 }
 
 export class BoardState implements IBoardState {
@@ -123,6 +125,14 @@ export class BoardState implements IBoardState {
 
     moveIsCapture(move: IMove): boolean {
         return this.#internalState.moveIsCapture(move);
+    }
+	
+	whiteHasSufficientCheckmatingMaterial(): boolean {
+        return this.#internalState.whiteHasSufficientCheckmatingMaterial();
+    }
+	
+	blackHasSufficientCheckmatingMaterial(): boolean {
+        return this.#internalState.blackHasSufficientCheckmatingMaterial();
     }
 }
 

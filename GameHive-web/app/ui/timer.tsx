@@ -44,14 +44,14 @@ function formatDisplayMilli(n: number): string {
 export default function Timer({
   ticking,
   timerActive,
-  player,
   timeControl,
+  allowGrace,
   onTimeout,
 }: {
   ticking: boolean;
   timerActive: boolean;
-  player: String;
   timeControl: ITimeControl;
+  allowGrace: boolean;
   onTimeout: () => void;
 }) {
   const [hasStarted, setHasStarted] = useState<boolean>(false);
@@ -59,6 +59,7 @@ export default function Timer({
     useState<number>(timeControl.baseMillis);
   const [turnMillis, setTurnMillis] = useState<number>(0);
   const [baseDateTime, setBaseDateTime] = useState<number>(Date.now());
+  const [inGracePeriod,setInGracePeriod] = useState<boolean>(allowGrace)
 
   useEffect(() => {
     const int = 50;
@@ -67,13 +68,15 @@ export default function Timer({
       const bdt = Date.now();
       setBaseDateTime(bdt);
       setHasStarted(hs => true);
-      interval = setInterval(() => {
-        setTurnMillis((t) => t + int);
-        if (remainingMillis - (Date.now() - bdt) <= 0) {
-          onTimeout();
-          setRemainingMillis(0);
-        }
-      }, int);
+      if (!inGracePeriod) {
+        interval = setInterval(() => {
+          setTurnMillis((t) => t + int);
+          if (remainingMillis - (Date.now() - bdt) <= 0) {
+            onTimeout();
+            setRemainingMillis(0);
+          }
+        }, int);
+      }
     } else {
       const rem = Math.max(
         hasStarted
@@ -81,7 +84,8 @@ export default function Timer({
           : remainingMillis,
         0
       );
-      const incr = hasStarted && timerActive && rem > 0 ? timeControl.incrementMillis : 0;
+      setInGracePeriod(!hasStarted);
+      const incr = (hasStarted && timerActive && rem > 0) ? timeControl.incrementMillis : 0;
       setRemainingMillis(rem+incr);
       setTurnMillis(0);
     }
@@ -94,7 +98,7 @@ export default function Timer({
   }, [ticking]);
 
   const time: number = Math.max(
-    ticking ? remainingMillis - (Date.now() - baseDateTime) : remainingMillis,
+    (ticking && !inGracePeriod && hasStarted) ? remainingMillis - (Date.now() - baseDateTime) : remainingMillis,
     0
   );
   const timeBreakdown: ITimeBreakdown = getTimeBreakdown(time);

@@ -151,6 +151,8 @@ public:
 	int getBlackTotalMobility();
 	int getTotalVisibilityFromSquare(const Square_t& sq);
 	int getTotalVisibilityFromIndex(const int& sq_idx);
+	bool whiteHasSufficientCheckmatingMaterial();
+	bool blackHasSufficientCheckmatingMaterial();
 	void clearHistory();
 protected: 
 	void makeLegalMove(const Square_t& from, const Square_t& to);

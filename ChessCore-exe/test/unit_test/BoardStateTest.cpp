@@ -221,6 +221,7 @@ TEST_CASE("WHITE MOVE WOULD BE CHECK", "[moveGivesCheck]") {
 	std::string FEN = "4k3/2P5/5P2/1N6/6B1/7n/1Qr5/2R2b1K w - - 0 1";
 	BoardState bs(FEN);
 	
+	
 	REQUIRE(!bs.getCheckStatus());
 	// Queen 
 	REQUIRE(bs.isMoveLegal(Square::getSquare("b2"),Square::getSquare("e5")));
@@ -243,10 +244,15 @@ TEST_CASE("WHITE MOVE WOULD BE CHECK", "[moveGivesCheck]") {
 	REQUIRE(bs.isMoveLegal(Square::getSquare("c1"),Square::getSquare("b1")));
 	REQUIRE(!bs.moveGivesCheck(Square::getSquare("c1"),Square::getSquare("b1")));
 	// Pawn - promote
-	REQUIRE(bs.isMoveLegal({Square::getSquare("c7"),Square::getSquare("c8"),ROOK}));
-	REQUIRE(bs.moveGivesCheck({Square::getSquare("c7"),Square::getSquare("c8"),ROOK}));
-	REQUIRE(bs.isMoveLegal({Square::getSquare("c7"),Square::getSquare("c8"),KNIGHT}));
-	REQUIRE(!bs.moveGivesCheck({Square::getSquare("c7"),Square::getSquare("c8"),KNIGHT}));
+	ExtendedMove m;
+	m = {Square::getSquare("c7"),Square::getSquare("c8"),ROOK};
+	REQUIRE(bs.isMoveLegal(m));
+	m = {Square::getSquare("c7"),Square::getSquare("c8"),ROOK};
+	REQUIRE(bs.moveGivesCheck(m));
+	m = {Square::getSquare("c7"),Square::getSquare("c8"),KNIGHT};
+	REQUIRE(bs.isMoveLegal(m));
+	m = {Square::getSquare("c7"),Square::getSquare("c8"),KNIGHT};
+	REQUIRE(!bs.moveGivesCheck(m));
 	// Pawn - no promote
 	REQUIRE(bs.isMoveLegal(Square::getSquare("f6"),Square::getSquare("f7")));
 	REQUIRE(bs.moveGivesCheck(Square::getSquare("f6"),Square::getSquare("f7")));
@@ -278,10 +284,15 @@ TEST_CASE("BLACK MOVE WOULD BE CHECK", "[moveGivesCheck]") {
 	REQUIRE(bs.isMoveLegal(Square::getSquare("d8"),Square::getSquare("f8")));
 	REQUIRE(!bs.moveGivesCheck(Square::getSquare("d8"),Square::getSquare("f8")));
 	// Pawn - promote
-	REQUIRE(bs.isMoveLegal({Square::getSquare("c2"),Square::getSquare("c1"),ROOK}));
-	REQUIRE(bs.moveGivesCheck({Square::getSquare("c2"),Square::getSquare("c1"),ROOK}));
-	REQUIRE(bs.isMoveLegal({Square::getSquare("c2"),Square::getSquare("c1"),KNIGHT}));
-	REQUIRE(!bs.moveGivesCheck({Square::getSquare("c2"),Square::getSquare("c1"),KNIGHT}));
+	ExtendedMove m;
+	m = {Square::getSquare("c2"),Square::getSquare("c1"),ROOK};
+	REQUIRE(bs.isMoveLegal(m));
+	m = {Square::getSquare("c2"),Square::getSquare("c1"),ROOK};
+	REQUIRE(bs.moveGivesCheck(m));
+	m = {Square::getSquare("c2"),Square::getSquare("c1"),KNIGHT};
+	REQUIRE(bs.isMoveLegal(m));
+	m = {Square::getSquare("c2"),Square::getSquare("c1"),KNIGHT};
+	REQUIRE(!bs.moveGivesCheck(m));
 	// Pawn - no promote
 	REQUIRE(bs.isMoveLegal(Square::getSquare("d3"),Square::getSquare("d2")));
 	REQUIRE(bs.moveGivesCheck(Square::getSquare("d3"),Square::getSquare("d2")));
@@ -292,4 +303,20 @@ TEST_CASE("KING DEFENDS PIECE", "[moveGivesCheck]") {
 	BoardState bs(FEN);
 	
 	REQUIRE(!bs.isMoveLegal(Square::getSquare("e4"),Square::getSquare("d5")));
+}
+
+TEST_CASE("WHITE SUFFICIENT CHECKMATING MATERIAL", "[whiteHasSufficientCheckmatingMaterial]") {
+	std::string FEN = "1k6/8/4n3/4P3/8/8/5B2/1K6 w - - 0 1";
+	BoardState bs(FEN);
+	
+	REQUIRE(!bs.blackHasSufficientCheckmatingMaterial());
+	REQUIRE(bs.whiteHasSufficientCheckmatingMaterial());
+}
+
+TEST_CASE("BLACK SUFFICIENT CHECKMATING MATERIAL", "[blackHasSufficientCheckmatingMaterial]") {
+	std::string FEN = "1k6/8/4n3/4p3/8/8/5B2/1K6 w - - 0 1";
+	BoardState bs(FEN);
+	
+	REQUIRE(bs.blackHasSufficientCheckmatingMaterial());
+	REQUIRE(!bs.whiteHasSufficientCheckmatingMaterial());
 }

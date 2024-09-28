@@ -54,13 +54,13 @@ export default function Page() {
       </p>
       <p>
         &emsp;I plan on increasing the functionality of this site over time. Some ideas I have are:
-        <ul>
-          <li>&emsp;&emsp;&#x2022; More games, as mentioned above.</li>
-          <li>&emsp;&emsp;&#x2022; An arcade-style leaderboard with most, or most recent, games where a player beat the engine.</li>
-          <li>&emsp;&emsp;&#x2022; Improved board interaction, including square-to-square arrow drawing, rewinding the view-state of the board, and flipping the board display vertically.</li>
-          <li>&emsp;&emsp;&#x2022; Expanding the site to include player-versus-player games.</li>
-        </ul>
       </p>
+      <ul>
+        <li>&emsp;&emsp;&#x2022; More games, as mentioned above.</li>
+        <li>&emsp;&emsp;&#x2022; An arcade-style leaderboard with most, or most recent, games where a player beat the engine.</li>
+        <li>&emsp;&emsp;&#x2022; Improved board interaction, including square-to-square arrow drawing, rewinding the view-state of the board, and flipping the board display vertically.</li>
+        <li>&emsp;&emsp;&#x2022; Expanding the site to include player-versus-player games.</li>
+      </ul>
       <p>
         &emsp;This website is hosted on Fly.io.
       </p>

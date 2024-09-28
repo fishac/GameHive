@@ -815,6 +815,26 @@ int BoardState::getTotalVisibilityFromIndex(const int& sq_idx) {
 	return Square::getNumSquares(visibility[sq_idx]);
 }
 
+bool BoardState::whiteHasSufficientCheckmatingMaterial() {
+	bool numP = getNumWhitePawns();
+	bool numN = getNumWhiteKnights();
+	bool numB = getNumWhiteBishops();
+	bool numR = getNumWhiteRooks();
+	bool numQ = getNumWhiteQueens();
+	
+	return !(numP == 0 && numR == 0 && numQ == 0 && (numN + numB <= 1));
+}
+
+bool BoardState::blackHasSufficientCheckmatingMaterial() {
+	bool numP = getNumBlackPawns();
+	bool numN = getNumBlackKnights();
+	bool numB = getNumBlackBishops();
+	bool numR = getNumBlackRooks();
+	bool numQ = getNumBlackQueens();
+	
+	return !(numP == 0 && numR == 0 && numQ == 0 && (numN + numB <= 1));
+}		
+
 void BoardState::clearHistory() {
 	moveHistory.clear();
 	boardStateHistory.clear();

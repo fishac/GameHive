@@ -13,8 +13,7 @@ export default function ChessMoveHistory({
   moveHistory: IMoveRecord[];
   chessUtils: IChessUtils | null;
   result: TGameResult
-}) {
-
+}) {  
   function getSquareDisplay(s: TSquare): string {
     return chessUtils ? chessUtils.getSquareString(s) : s.toString();
   }
