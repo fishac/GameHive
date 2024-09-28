@@ -10,12 +10,7 @@ import { useSearchParams } from "next/navigation";
 import { IChessEngine } from "@/app/lib/chess-engine";
 import {
   CHESS_ENGINE_WORKER_MESSAGE_TYPES,
-  IInitializeRequest,
-  IProvideMoveRequest,
-  ISuggestMoveRequest,
-  IInitializeResponse,
-  IProvideMoveResponse,
-  ISuggestMoveResponse,
+  IEngineTurnRequest
 } from "@/app/lib/chess-engine-messages";
 import { TGameResult, GameResult } from "@/app/lib/game-result";
 import { TPiece } from "@/app/lib/piece";
@@ -49,6 +44,8 @@ export default function ChessPage() {
   const searchParams = useSearchParams();
   const humanPlayerColor = searchParams.get("white") === "1";
   const initialTimeSettings: ITimeControl = getTimeControl(Number.parseInt(searchParams.get("timeControl") || '-1'));
+  const [whiteRemainingMillis, setWhiteRemainingMillis] = useState<number>(initialTimeSettings.baseMillis);
+  const [blackRemainingMillis, setBlackRemainingMillis] = useState<number>(initialTimeSettings.baseMillis);
 
   function getGameResult() {
     if (boardState?.getCheckmateStatus() && boardState.getTurnColor()) {
@@ -71,6 +68,8 @@ export default function ChessPage() {
         chessEngineWorker?.postMessage({
           requestType: CHESS_ENGINE_WORKER_MESSAGE_TYPES.ENGINE_MOVE,
           previousMove: NOMOVE,
+          remainingMillis: humanPlayerColor ? blackRemainingMillis : whiteRemainingMillis,
+          incrementMillis: initialTimeSettings.incrementMillis
         });
       }
       setGameContext((gc: IGameContext) => {
@@ -90,14 +89,6 @@ export default function ChessPage() {
       response.responseType === CHESS_ENGINE_WORKER_MESSAGE_TYPES.ENGINE_MOVE
     ) {
       if (boardState && gameContext.result === GameResult.UNDECIDED) {
-        /*setMoveHistory((hist: IMoveRecord[]) => {
-          hist.push({
-            move: response.move,
-            movedPiece: boardState.getPieceOnSquare(response.move.from),
-            moveIsCapture: boardState.moveIsCapture(response.move),
-          });
-          return hist;
-        });*/
         setMoveHistory([...moveHistory,{
             move: response.move,
             movedPiece: boardState.getPieceOnSquare(response.move.from),
@@ -128,16 +119,9 @@ export default function ChessPage() {
       chessEngineWorker.postMessage({
         requestType: CHESS_ENGINE_WORKER_MESSAGE_TYPES.ENGINE_MOVE,
         previousMove: move,
-      });
-      /*setMoveHistory((hist: IMoveRecord[]) => {
-        hist.push({
-          move: move,
-          movedPiece: boardState.getPieceOnSquare(move.from),
-          moveIsCapture: boardState.moveIsCapture(move)
-        });
-        return hist;
-      });
-      */
+        remainingMillis: humanPlayerColor ? blackRemainingMillis : whiteRemainingMillis,
+        incrementMillis: initialTimeSettings.incrementMillis
+      } as IEngineTurnRequest);
       setMoveHistory([...moveHistory,{
         move: move,
         movedPiece: boardState.getPieceOnSquare(move.from),
@@ -234,6 +218,10 @@ export default function ChessPage() {
         player1IsEngine={!humanPlayerColor}
         player2IsEngine={humanPlayerColor}
         chessUtils={chessUtils}
+        player1RemainingMillis={whiteRemainingMillis}
+        player2RemainingMillis={blackRemainingMillis}
+        setPlayer1RemainingMillis={setWhiteRemainingMillis}
+        setPlayer2RemainingMillis={setBlackRemainingMillis}
         onTimeout={handleTimeout}
       />
     </div>

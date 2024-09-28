@@ -15,6 +15,10 @@ export default function ChessSidebar({
   chessUtils,
   player1IsEngine,
   player2IsEngine,
+  player1RemainingMillis,
+  player2RemainingMillis,
+  setPlayer1RemainingMillis,
+  setPlayer2RemainingMillis,
   onTimeout,
 }: {
   moveHistory: IMoveRecord[];
@@ -26,6 +30,10 @@ export default function ChessSidebar({
   chessUtils: IChessUtils | null;
   player1IsEngine: boolean;
   player2IsEngine: boolean;
+  player1RemainingMillis: number;
+  player2RemainingMillis: number;
+  setPlayer1RemainingMillis: (rem: number) => void;
+  setPlayer2RemainingMillis: (rem: number) => void;
   onTimeout: (player1: boolean) => void;
 }) {
   return (
@@ -35,6 +43,8 @@ export default function ChessSidebar({
         playerTurn={player2Turn}
         timerActive={timersActive}
         timeControl={timeControl}
+        remainingMillis={player2RemainingMillis}
+        setRemainingMillis={setPlayer2RemainingMillis}
         onTimeout={() => onTimeout(false)}
       />
       <ChessMoveHistory moveHistory={moveHistory} result={result} chessUtils={chessUtils} />
@@ -43,6 +53,8 @@ export default function ChessSidebar({
         playerTurn={player1Turn}
         timerActive={timersActive}
         timeControl={timeControl}
+        remainingMillis={player1RemainingMillis}
+        setRemainingMillis={setPlayer1RemainingMillis}
         onTimeout={() => onTimeout(true)}
       />
     </div>

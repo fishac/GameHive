@@ -28,7 +28,6 @@ async function suggestMove(message: ISuggestMoveRequest) {
     if (!chessEngine) {
         await initialize();
     }
-    console.log("")
     const move: IMove = chessEngine.suggestMove(180000,0);
     return move;
 }
@@ -40,7 +39,7 @@ async function engineMove(message: IEngineTurnRequest) {
     if (isValidMove(message.previousMove)) {
         const provideSuccess: boolean = chessEngine.provideMove(message.previousMove);
     }
-    const move: IMove = chessEngine.suggestMove(5000,0);
+    const move: IMove = chessEngine.suggestMove(message.remainingMillis,message.incrementMillis);
     const engineProvideSuccess: boolean = chessEngine.provideMove(move);
     return move;
 }

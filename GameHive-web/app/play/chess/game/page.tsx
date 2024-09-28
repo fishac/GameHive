@@ -6,7 +6,7 @@ function areParamsValid(searchParams: any): boolean {
   return (
     searchParams &&
     ["1", "0"].includes(searchParams.white) &&
-    ["0", "1", "2", "3", "4", "-1"].includes(searchParams.timeControl)
+    ["0", "1", "2", "3", "4", "5", "6"].includes(searchParams.timeControl)
   );
 }
 

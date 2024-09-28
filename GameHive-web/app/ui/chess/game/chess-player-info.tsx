@@ -7,12 +7,16 @@ export default function ChessPlayerInfo({
   playerTurn,
   timerActive,
   timeControl,
+  remainingMillis,
+  setRemainingMillis,
   onTimeout,
 }: {
   isEngine: boolean;
   playerTurn: boolean;
   timerActive: boolean;
   timeControl: ITimeControl;
+  remainingMillis: number;
+  setRemainingMillis: (rem: number) => void;
   onTimeout: () => void;
 }) {
   return (
@@ -26,6 +30,8 @@ export default function ChessPlayerInfo({
           timerActive={timerActive}
           timeControl={timeControl}
           allowGrace={!isEngine}
+          remainingMillis={remainingMillis}
+          setRemainingMillis={setRemainingMillis}
           onTimeout={onTimeout}
         />
         {isEngine && playerTurn && (

@@ -46,21 +46,22 @@ export default function Timer({
   timerActive,
   timeControl,
   allowGrace,
+  remainingMillis,
+  setRemainingMillis,
   onTimeout,
 }: {
   ticking: boolean;
   timerActive: boolean;
   timeControl: ITimeControl;
   allowGrace: boolean;
+  remainingMillis: number;
+  setRemainingMillis: (rem: number) => void;
   onTimeout: () => void;
 }) {
   const [hasStarted, setHasStarted] = useState<boolean>(false);
-  const [remainingMillis, setRemainingMillis] =
-    useState<number>(timeControl.baseMillis);
   const [turnMillis, setTurnMillis] = useState<number>(0);
   const [baseDateTime, setBaseDateTime] = useState<number>(Date.now());
-  const [inGracePeriod,setInGracePeriod] = useState<boolean>(allowGrace)
-
+  const [inGracePeriod,setInGracePeriod] = useState<boolean>(allowGrace);
   useEffect(() => {
     const int = 50;
     let interval: NodeJS.Timeout;
@@ -79,12 +80,14 @@ export default function Timer({
       }
     } else {
       const rem = Math.max(
-        hasStarted
+        (hasStarted && !inGracePeriod)
           ? remainingMillis - (Date.now() - baseDateTime)
           : remainingMillis,
         0
       );
-      setInGracePeriod(!hasStarted);
+      if (hasStarted) {
+        setInGracePeriod(false);
+      }
       const incr = (hasStarted && timerActive && rem > 0) ? timeControl.incrementMillis : 0;
       setRemainingMillis(rem+incr);
       setTurnMillis(0);

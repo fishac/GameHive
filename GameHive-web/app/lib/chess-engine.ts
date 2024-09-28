@@ -28,7 +28,7 @@ class ChessEngine {
     }
 
 	suggestMove(millisRemaining: number, millisIncrement: number): IMove {
-        return this.#internalEngine.suggestMove(Math.ceil(millisRemaining),Math.ceil(millisIncrement),true);
+        return this.#internalEngine.suggestMove(Math.ceil(millisRemaining),Math.ceil(millisIncrement),false);
     }
 
 	provideMove(m: IMove): boolean {

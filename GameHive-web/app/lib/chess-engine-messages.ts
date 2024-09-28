@@ -24,6 +24,8 @@ export interface ISuggestMoveRequest {
 export interface IEngineTurnRequest {
     requestType: 3;
     previousMove: IMove;
+    remainingMillis: number;
+    incrementMillis: number;
 }
 
 export interface IInitializeResponse {
