@@ -52,7 +52,7 @@ export default function ChessSquare({
     transform: any;
     isDragging: any;
   } = useDraggable({
-    id: square,
+    id: `${square}`,
     disabled: !isLegalFromSquare || promotionMenuOpen || !gameOngoing,
   });
   const draggableStyle = {

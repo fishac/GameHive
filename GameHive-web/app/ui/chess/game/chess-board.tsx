@@ -43,14 +43,14 @@ export default function ChessBoard({
   function handleDragStart(
     e: any
   ): void {
-    setDraggingFromSquare(e.active.id);
+    setDraggingFromSquare(parseInt(e.active.id) as TSquare);
   }
 
   function handleDragEnd(
     e: any
   ): void {
     if (e.over) {
-      const move: IMove = { from: e.active.id, to: e.over.id, promotionPiece: 0 };
+      const move: IMove = { from: (parseInt(e.active.id) as TSquare), to: (parseInt(e.over.id) as TSquare), promotionPiece: 0 };
       if (boardState.moveRequiresPromotion(move)) {
         setPromotionContext({ from: move.from, to: move.to });
         setDraggingFromSquare(-1);
