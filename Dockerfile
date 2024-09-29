@@ -7,9 +7,7 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app/GameHive 
 
 COPY ./GameHive-web ./
-RUN ls -la
 RUN npm ci 
-RUN ls -la
 RUN npm run build 
 
 FROM base AS production 
@@ -27,8 +25,6 @@ COPY --from=node-build --chown=nextjs:nodejs /app/GameHive/.next/standalone ./
 COPY --from=node-build --chown=nextjs:nodejs /app/GameHive/.next/static ./.next/static 
 COPY --from=node-build /app/GameHive/package.json ./package.json
 COPY --from=node-build /app/GameHive/public ./public
-
-RUN ls -la
 
 USER nextjs
 
